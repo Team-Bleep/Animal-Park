@@ -18,7 +18,7 @@ public:
     GLuint LoadShader(GLenum type, const char *shaderSrc);
     GLuint LoadProgram(const char *vertShaderSrc, const char *fragShaderSrc);
     
-    int GenBackdrop(float scale, float **vertices, int **indices);
+    int GenBackdrop(float scale, float **vertices, float **normals, float **texCoords, int **indices);
 };
 
 #endif /* GLESRenderer_hpp */

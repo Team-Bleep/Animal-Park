@@ -48,7 +48,7 @@ GLuint GLESRenderer::LoadShader(GLenum type, const char *shaderSrc) {
     glCompileShader(shader);
     
     GLint compiled;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &compiled);
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
     if(!compiled){
         GLint infoLen = 0;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
@@ -107,23 +107,41 @@ GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShad
         return 0;
     }
     
-    return 0;
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+    
+    return programObject;
 }
 
-int GLESRenderer::GenBackdrop(float scale, float **vertices, int **indices){
+int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, float **texCoords, int **indices){
     //Generate backdrop
     int i;
     int numVertices = 4;
     int numIndices = 6;
     
     float squareVerts[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, 0.5f,  0.0f,
-        -0.5f, 0.5f,  0.0f,
-        0.5f, -0.5f,  0.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
     };
     
-    //Memory for buffers
+    float squareNormals[] = {
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+    };
+    
+    float squareTex[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0,
+    };
+   
+    
+    // Memory for buffers - VERTICES
     if(vertices!=NULL){
         *vertices = (float *) malloc(sizeof(float) * 3 * numVertices);
         memcpy(*vertices, squareVerts, sizeof(squareVerts));
@@ -133,7 +151,19 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, int **indices){
         }
     }
     
-    //Generate the indices
+    // Memory for buffers - NORMALS
+    if(normals!=NULL){
+        *normals = (float *) malloc(sizeof(float) * 3 * numVertices);
+        memcpy(*normals, squareNormals, sizeof(squareNormals));
+    }
+    
+    // Memory for buffers - TEXTURE COORDINATES
+    if (texCoords != NULL) {
+        *texCoords = (float *)malloc (sizeof(float) * 2 * numVertices);
+        memcpy (*texCoords, squareTex, sizeof (squareTex)) ;
+    }
+    
+    // Memory for buffers - INDICES + Generation of indices
     if(indices!=NULL){
         GLuint squareIndices[] = {
             0,1,2,
@@ -146,4 +176,3 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, int **indices){
     
     return numIndices;
 }
-

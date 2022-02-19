@@ -49,7 +49,7 @@ enum{
 }
 
 - (void) loadBackdrop{
-    numIndices = glesRenderer.GenBackdrop(1.0f, &vertices, &indices);
+    numIndices = glesRenderer.GenBackdrop(1.0f, &vertices, &normals, &texCoords, &indices);
 }
 
 - (void) setup:(GLKView *)view {
@@ -62,26 +62,28 @@ enum{
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     theView = view;
     [EAGLContext setCurrentContext:view.context];
-    if(![self setupShaders])
+    if(![self setupShaders]){
+        NSLog(@"SHADERS WHERE BRO?");
         return;
+    }
+       
     
-    backdropTexture = [self setupTexture:@"Textures/park.png"];
+    backdropTexture = [self setupTexture:@"park.png"];
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, backdropTexture);
     glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
     
-    NSLog(@"BOUND TEXTURE, WHERE IMAGE??");
     
-    //glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
 }
 
 - (void)update {
 
-    modelViewProjection = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -5.0);
+    modelViewProjection = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -2.5);
     normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewProjection), NULL);
     
-    float aspect = (float)theView.drawableHeight;
+    float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
     GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
     modelViewProjection = GLKMatrix4Multiply(perspective, modelViewProjection);
 }
@@ -110,8 +112,11 @@ enum{
     
     char *fragmentShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"FragmentShader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"FragmentShader.fsh"] pathExtension]] cStringUsingEncoding:1]);
     programObject = glesRenderer.LoadProgram(vertexShaderStr, fragmentShaderStr);
-    if(programObject == 0)
+    if(programObject == 0){
+        NSLog(@"PROG OBJ WHERE HOMIE???");
         return false;
+    }
+      
     
     uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(programObject, "modelViewProjectionMatrix");
     uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(programObject, "normalMatrix");
