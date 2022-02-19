@@ -13,6 +13,10 @@
 		D82C378927AE4B5D00256AD9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D82C378727AE4B5D00256AD9 /* Main.storyboard */; };
 		D82C378B27AE4B5F00256AD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D82C378A27AE4B5F00256AD9 /* Assets.xcassets */; };
 		D82C378E27AE4B5F00256AD9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D82C378C27AE4B5F00256AD9 /* LaunchScreen.storyboard */; };
+		D85032FF27C0E9310045BD14 /* GLESRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D85032FD27C0E9310045BD14 /* GLESRenderer.cpp */; };
+		D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = D8F0C21127C11842002BA60B /* VertexShader.vsh */; };
+		D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = D8F0C21327C11E69002BA60B /* FragmentShader.fsh */; };
+		D8F0C21727C11FFF002BA60B /* Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D8F0C21627C11FFF002BA60B /* Renderer.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +28,13 @@
 		D82C378A27AE4B5F00256AD9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D82C378D27AE4B5F00256AD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D82C378F27AE4B5F00256AD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D85032FC27C0E9310045BD14 /* AnimalPark-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AnimalPark-Bridging-Header.h"; sourceTree = "<group>"; };
+		D85032FD27C0E9310045BD14 /* GLESRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GLESRenderer.cpp; sourceTree = "<group>"; };
+		D85032FE27C0E9310045BD14 /* GLESRenderer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GLESRenderer.hpp; sourceTree = "<group>"; };
+		D8F0C21127C11842002BA60B /* VertexShader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = VertexShader.vsh; sourceTree = "<group>"; };
+		D8F0C21327C11E69002BA60B /* FragmentShader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = FragmentShader.fsh; sourceTree = "<group>"; };
+		D8F0C21627C11FFF002BA60B /* Renderer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Renderer.mm; sourceTree = "<group>"; };
+		D8F0C21827C12046002BA60B /* Renderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Renderer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +51,8 @@
 		D82C377527AE4B5D00256AD9 = {
 			isa = PBXGroup;
 			children = (
+				D8F0C21527C11FBC002BA60B /* Renderer */,
+				D8F0C21027C11657002BA60B /* Shaders */,
 				D82C378027AE4B5D00256AD9 /* AnimalPark */,
 				D82C377F27AE4B5D00256AD9 /* Products */,
 			);
@@ -56,6 +69,8 @@
 		D82C378027AE4B5D00256AD9 /* AnimalPark */ = {
 			isa = PBXGroup;
 			children = (
+				D85032FD27C0E9310045BD14 /* GLESRenderer.cpp */,
+				D85032FE27C0E9310045BD14 /* GLESRenderer.hpp */,
 				D82C378127AE4B5D00256AD9 /* AppDelegate.swift */,
 				D82C378327AE4B5D00256AD9 /* SceneDelegate.swift */,
 				D82C378527AE4B5D00256AD9 /* ViewController.swift */,
@@ -63,8 +78,27 @@
 				D82C378A27AE4B5F00256AD9 /* Assets.xcassets */,
 				D82C378C27AE4B5F00256AD9 /* LaunchScreen.storyboard */,
 				D82C378F27AE4B5F00256AD9 /* Info.plist */,
+				D85032FC27C0E9310045BD14 /* AnimalPark-Bridging-Header.h */,
 			);
 			path = AnimalPark;
+			sourceTree = "<group>";
+		};
+		D8F0C21027C11657002BA60B /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				D8F0C21127C11842002BA60B /* VertexShader.vsh */,
+				D8F0C21327C11E69002BA60B /* FragmentShader.fsh */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		D8F0C21527C11FBC002BA60B /* Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				D8F0C21627C11FFF002BA60B /* Renderer.mm */,
+				D8F0C21827C12046002BA60B /* Renderer.h */,
+			);
+			path = Renderer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -99,6 +133,7 @@
 				TargetAttributes = {
 					D82C377D27AE4B5D00256AD9 = {
 						CreatedOnToolsVersion = 13.2.1;
+						LastSwiftMigration = 1320;
 					};
 				};
 			};
@@ -125,6 +160,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */,
+				D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */,
 				D82C378E27AE4B5F00256AD9 /* LaunchScreen.storyboard in Resources */,
 				D82C378B27AE4B5F00256AD9 /* Assets.xcassets in Resources */,
 				D82C378927AE4B5D00256AD9 /* Main.storyboard in Resources */,
@@ -141,6 +178,8 @@
 				D82C378627AE4B5D00256AD9 /* ViewController.swift in Sources */,
 				D82C378227AE4B5D00256AD9 /* AppDelegate.swift in Sources */,
 				D82C378427AE4B5D00256AD9 /* SceneDelegate.swift in Sources */,
+				D8F0C21727C11FFF002BA60B /* Renderer.mm in Sources */,
+				D85032FF27C0E9310045BD14 /* GLESRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,8 +326,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					GLES_SILENCE_DEPRECATION,
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AnimalPark/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -304,6 +349,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ca.btechgames.AnimalPark;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AnimalPark/AnimalPark-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -314,8 +361,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = GLES_SILENCE_DEPRECATION;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AnimalPark/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -331,6 +380,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ca.btechgames.AnimalPark;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AnimalPark/AnimalPark-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
