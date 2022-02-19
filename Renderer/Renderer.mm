@@ -80,10 +80,10 @@ enum{
 
 - (void)update {
 
-    modelViewProjection = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -2.5);
+    modelViewProjection = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -5);
     normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewProjection), NULL);
     
-    float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
+    float aspect = (float)theView.drawableWidth /  (float)theView.drawableHeight;
     GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
     modelViewProjection = GLKMatrix4Multiply(perspective, modelViewProjection);
 }
@@ -121,7 +121,7 @@ enum{
     uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(programObject, "modelViewProjectionMatrix");
     uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(programObject, "normalMatrix");
     uniforms[UNIFORM_PASSTHROUGH] = glGetUniformLocation(programObject, "passThrough");
-    uniforms[UNIFORM_SHADEINFRAG] = glGetUniformLocation(programObject, "shadeinFrag");
+    uniforms[UNIFORM_SHADEINFRAG] = glGetUniformLocation(programObject, "shadeInFrag");
     uniforms[UNIFORM_TEXTURE] = glGetUniformLocation(programObject, "texSampler");
     
     return true;
@@ -136,6 +136,8 @@ enum{
     
     int width = (int)CGImageGetWidth(spriteImage);
     int height = (int)CGImageGetHeight(spriteImage);
+    NSLog(@"Image Height: %d", height);
+    NSLog(@"Image Width: %d", width);
     
     GLubyte *spriteData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
     

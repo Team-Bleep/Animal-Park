@@ -122,8 +122,8 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     float squareVerts[] = {
         1.0f, 1.0f, 1.0f,
         -1.0f, 1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f,
         -1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f,
     };
     
     float squareNormals[] = {

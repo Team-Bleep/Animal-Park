@@ -16,7 +16,7 @@
 - (void)setup:(GLKView *)view;
 - (void)loadBackdrop;
 - (void)update;
-- (void)draw:(CGRect)drawRect;
+- (void)draw:(CGRect)drawBackdrop;
 
 @end
 
