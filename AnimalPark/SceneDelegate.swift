@@ -29,9 +29,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive
-        
         calculateElapsedTime()
-        dateLabelTest.text = refreshData.elapsedTime.description + " seconds since last opened"
+        //dateLabelTest.text = refreshData.elapsedTime.description + " seconds since last opened"
+        CurrencyHandler.addCurrency(curr: refreshData.elapsedTime * CurrencyHandler.TimeCurrencyMultiplier)
+        dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
     }
 
     func calculateElapsedTime() {
