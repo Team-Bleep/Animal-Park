@@ -33,6 +33,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //dateLabelTest.text = refreshData.elapsedTime.description + " seconds since last opened"
         CurrencyHandler.addCurrency(curr: refreshData.elapsedTime * CurrencyHandler.TimeCurrencyMultiplier)
         dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
+        spawnAnimals()
+    }
+    
+    func spawnAnimals() {
+        let spawnTime = 5 // time it takes for animal to spawn
+        // despawn current animals depending on elapsed time
+        
+        for _ in 1...refreshData.elapsedTime/spawnTime {
+            if (Int.random(in: 0..<2)) == 0 {
+                // spawn animal
+            }
+        }
+        
+        
     }
 
     func calculateElapsedTime() {
