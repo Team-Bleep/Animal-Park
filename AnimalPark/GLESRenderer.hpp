@@ -20,7 +20,9 @@ public:
     
     int GenBackdrop(float scale, float **vertices, float **normals, float **texCoords, int **indices);
     
-    int GenAnimal(float scale, float **vertices, float **normals, float **texCoords, int **indices);
+    int GenAnimal(float scale, float **vertices, float **normals, int **indices);
+    
+    int GenAnimal2(float scale, float **vertices, float **normals, int **indices);
 };
 
 #endif /* GLESRenderer_hpp */

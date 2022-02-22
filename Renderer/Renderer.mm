@@ -53,7 +53,11 @@ enum{
 }
 
 - (void) loadAnimal{
-    animalNumIndices = glesRenderer.GenAnimal(1.0f, &vertices, &normals, &texCoords, &indices);
+    animalNumIndices = glesRenderer.GenAnimal(1.0f, &vertices, &normals, &indices);
+}
+
+- (void) loadAnimal2{
+    animalNumIndices = glesRenderer.GenAnimal2(1.0f, &vertices, &normals, &indices);
 }
 
 - (void) setup:(GLKView *)view {
@@ -109,34 +113,15 @@ enum{
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat),texCoords);
     glEnableVertexAttribArray(3);
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices);
-
-//
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), vertices);
-//    glEnableVertexAttribArray(0);
-//    glVertexAttrib4f(1, 1.0f, 1.0f, 0.0f, 1.0f);
-//    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), normals);
-//    glEnableVertexAttribArray(2);
-//    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat),texCoords);
-//    glEnableVertexAttribArray(3);
-    //glDrawElements(GL_TRIANGLES, animalNumIndices, GL_UNSIGNED_INT, indices);
 }
 
 - (void)drawAnml:(CGRect)drawAnimal; {
-    //glUniformMatrix4fv(uniforms [UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)modelViewProjection.m);
-    //glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, normalMatrix.m);
-    //glUniform1i(uniforms[UNIFORM_PASSTHROUGH], false);
-    //glUniform1i(uniforms[UNIFORM_SHADEINFRAG], true);
-    //glViewport(0, 0, (int)theView.drawableWidth, (int)theView.drawableHeight);
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glUseProgram(programObject);
-    
+    glUniform1i(uniforms[UNIFORM_SHADEINFRAG], false);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), vertices);
     glEnableVertexAttribArray(0);
     glVertexAttrib4f(1, 1.0f, 1.0f, 0.0f, 1.0f);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), normals);
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat),texCoords);
-    glEnableVertexAttribArray(3);
     glDrawElements(GL_TRIANGLES, animalNumIndices, GL_UNSIGNED_INT, indices);
 }
 

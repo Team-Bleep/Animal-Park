@@ -41,6 +41,8 @@ class ViewController: GLKViewController {
         glesRenderer.draw(drawBackdrop) //??? what is CGRect T_T
         glesRenderer.loadAnimal()
         glesRenderer.drawAnml(drawBackdrop)
+        glesRenderer.loadAnimal2()
+        glesRenderer.drawAnml(drawBackdrop)
     }
 
 }
