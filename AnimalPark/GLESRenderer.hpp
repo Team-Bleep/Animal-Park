@@ -19,6 +19,8 @@ public:
     GLuint LoadProgram(const char *vertShaderSrc, const char *fragShaderSrc);
     
     int GenBackdrop(float scale, float **vertices, float **normals, float **texCoords, int **indices);
+    
+    int GenAnimal(float scale, float **vertices, float **normals, float **texCoords, int **indices);
 };
 
 #endif /* GLESRenderer_hpp */
