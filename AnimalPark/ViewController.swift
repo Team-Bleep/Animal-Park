@@ -29,7 +29,8 @@ class ViewController: GLKViewController {
             delegate = self as GLKViewControllerDelegate
             glesRenderer = Renderer()
             glesRenderer.setup(view)
-            glesRenderer.loadBackdrop()
+           // Sending vertex data to Vertex Array
+         //Replacing with other vertex data
         }
     }
     
@@ -51,7 +52,12 @@ class ViewController: GLKViewController {
     }
     
     override func glkView(_ view: GLKView, drawIn drawBackdrop: CGRect) {
+        glesRenderer.loadBackdrop()
         glesRenderer.draw(drawBackdrop) //??? what is CGRect T_T
+        glesRenderer.loadAnimal()
+        glesRenderer.drawAnml(drawBackdrop)
+        glesRenderer.loadAnimal2()
+        glesRenderer.drawAnml(drawBackdrop)
     }
 
 }
