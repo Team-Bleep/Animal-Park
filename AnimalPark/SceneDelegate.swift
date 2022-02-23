@@ -23,14 +23,45 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead)
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive
+        calculateElapsedTime()
+        //dateLabelTest.text = refreshData.elapsedTime.description + " seconds since last opened"
+        CurrencyHandler.addCurrency(curr: refreshData.elapsedTime/10 * CurrencyHandler.TimeCurrencyMultiplier)
+        dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
+        spawnAnimals()
+    }
+    
+    func spawnAnimals() {
+        let spawnTime = 5 // time it takes for animal to spawn
+        // despawn current animals depending on elapsed time
+        if (refreshData.elapsedTime < spawnTime) {
+            return
+        }
+        
+        for _ in 0...Int(refreshData.elapsedTime/spawnTime) {
+            if (Int.random(in: 0..<2)) == 0 {
+                // spawn animal
+                //ViewController.createAnimals()
+                //ViewController.createAnimals()
+                if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
+                    current.createAnimals()
+                    print("spawned")
+                }
+            }
+        }
+        
+        
     }
 
+    func calculateElapsedTime() {
+        refreshData.elapsedTime = Int(Date().timeIntervalSinceReferenceDate) - refreshData.lastOpened
+    }
+    
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
@@ -45,6 +76,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        refreshData.lastOpened = Int(Date().timeIntervalSinceReferenceDate)
     }
 
 

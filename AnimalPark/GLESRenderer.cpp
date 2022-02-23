@@ -120,10 +120,10 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     int numIndices = 6;
     
     float squareVerts[] = {
-        1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f,
+        -2.0f, -2.0f, 2.0f,  //Bottom Left
+        -2.0f, 2.0f,  2.0f,  //Top Left
+        2.0f, -2.0f,  2.0f, //Bottom Right
+        2.0f, 2.0f,  2.0f,  //Top Right
     };
     
     float squareNormals[] = {
@@ -134,10 +134,10 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     };
     
     float squareTex[] = {
-        0.0f, 0.0f,
-        1.0f, 0.0f,
         1.0f, 1.0f,
-        0.0f, 1.0,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0,
     };
    
     
@@ -167,7 +167,7 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     if(indices!=NULL){
         GLuint squareIndices[] = {
             0,1,2,
-            0,3,1
+            1,3,2
         };
         
         *indices = (int *) malloc(sizeof(int) * numIndices);
@@ -176,3 +176,103 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     
     return numIndices;
 }
+
+int GLESRenderer::GenAnimal(float scale, float **vertices, float **normals, int **indices){
+    
+    int i;
+    int numVertices = 4;
+    int numIndices = 6;
+    
+    float squareVerts[] = {
+        -0.5f, -0.5f, 3.0f,  //Bottom Left
+        -0.5f, -0.25f,  3.0f,  //Top Left
+        -0.25f, -0.5f,  3.0f, //Bottom Right
+        -0.25f, -0.25f,  3.0f,  //Top Right
+    };
+    
+    float squareNormals[] = {
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+    };
+    
+    // Memory for buffers - VERTICES
+    if(vertices!=NULL){
+        *vertices = (float *) malloc(sizeof(float) * 3 * numVertices);
+        memcpy(*vertices, squareVerts, sizeof(squareVerts));
+        
+        for(i = 0; i < numVertices * 3; i++){
+            (*vertices) [i] *= scale;
+        }
+    }
+    
+    // Memory for buffers - NORMALS
+    if(normals!=NULL){
+        *normals = (float *) malloc(sizeof(float) * 3 * numVertices);
+        memcpy(*normals, squareNormals, sizeof(squareNormals));
+    }
+    
+    // Memory for buffers - INDICES + Generation of indices
+    if(indices!=NULL){
+        GLuint squareIndices[] = {
+            0,1,2,
+            1,3,2
+        };
+        
+        *indices = (int *) malloc(sizeof(int) * numIndices);
+        memcpy(*indices, squareIndices, sizeof(squareIndices));
+    }
+    
+    return numIndices;
+};
+
+int GLESRenderer::GenAnimal2(float scale, float **vertices, float **normals, int **indices){
+    
+    int i;
+    int numVertices = 4;
+    int numIndices = 6;
+    
+    float squareVerts[] = {
+        0.5f, 0.5f, 3.0f,  //Bottom Left
+        0.5f, 0.25f,  3.0f,  //Top Left
+        0.25f, 0.5f,  3.0f, //Bottom Right
+        0.25f, 0.25f,  3.0f,  //Top Right
+    };
+    
+    float squareNormals[] = {
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+    };
+    
+    // Memory for buffers - VERTICES
+    if(vertices!=NULL){
+        *vertices = (float *) malloc(sizeof(float) * 3 * numVertices);
+        memcpy(*vertices, squareVerts, sizeof(squareVerts));
+        
+        for(i = 0; i < numVertices * 3; i++){
+            (*vertices) [i] *= scale;
+        }
+    }
+    
+    // Memory for buffers - NORMALS
+    if(normals!=NULL){
+        *normals = (float *) malloc(sizeof(float) * 3 * numVertices);
+        memcpy(*normals, squareNormals, sizeof(squareNormals));
+    }
+    
+    // Memory for buffers - INDICES + Generation of indices
+    if(indices!=NULL){
+        GLuint squareIndices[] = {
+            0,1,2,
+            1,3,2
+        };
+        
+        *indices = (int *) malloc(sizeof(int) * numIndices);
+        memcpy(*indices, squareIndices, sizeof(squareIndices));
+    }
+    
+    return numIndices;
+};
