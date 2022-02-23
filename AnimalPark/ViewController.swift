@@ -61,24 +61,26 @@ class ViewController: GLKViewController {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
             UserDefaults.standard.set(false, forKey: "firstLaunch")
         }
+        
+        // For interactivity with animals; use gesture recognizer?
+        // Maybe draw a UI object on top of where the animal is rendered?
        
     }
     
     override func glkView(_ view: GLKView, drawIn drawBackdrop: CGRect) {
-        rect = drawBackdrop
         glesRenderer.loadBackdrop()
-        glesRenderer.draw(rect) //??? what is CGRect T_T
+        glesRenderer.draw() //??? what is CGRect T_T
+        
         if (spawned0) {
             glesRenderer.loadAnimal()
-            glesRenderer.drawAnml(drawBackdrop)
+            glesRenderer.drawAnml()
         }
         
-        if(spawned1) {
+        if (spawned1) {
             glesRenderer.loadAnimal2()
-            glesRenderer.drawAnml(drawBackdrop)
+            glesRenderer.drawAnml()
         }
     }
-
 }
 
 struct refreshData {

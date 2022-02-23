@@ -96,7 +96,7 @@ enum{
     modelViewProjection = GLKMatrix4Multiply(perspective, modelViewProjection);
 }
 
-- (void)draw:(CGRect)drawBackdrop; {
+- (void)draw {
     glUniformMatrix4fv(uniforms [UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)modelViewProjection.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, normalMatrix.m);
     glUniform1i(uniforms[UNIFORM_PASSTHROUGH], false);
@@ -115,7 +115,7 @@ enum{
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices);
 }
 
-- (void)drawAnml:(CGRect)drawAnimal; {
+- (void)drawAnml {
     glUniform1i(uniforms[UNIFORM_SHADEINFRAG], false);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), vertices);
     glEnableVertexAttribArray(0);

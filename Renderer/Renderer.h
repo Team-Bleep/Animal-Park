@@ -18,8 +18,8 @@
 - (void)loadAnimal;
 - (void)loadAnimal2;
 - (void)update;
-- (void)draw:(CGRect)drawBackdrop;
-- (void)drawAnml:(CGRect)drawAnimal;
+- (void)draw;
+- (void)drawAnml;
 
 @end
 
