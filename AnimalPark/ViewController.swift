@@ -19,7 +19,11 @@ extension ViewController: GLKViewControllerDelegate {
 class ViewController: GLKViewController {
 
     private var context: EAGLContext?
-    private var glesRenderer: Renderer!
+    public var glesRenderer: Renderer!
+    private var rect: CGRect!
+    
+    private var spawned0 = false
+    private var spawned1 = false
     
     private func setupGL() {
         context = EAGLContext(api: .openGLES3)
@@ -34,12 +38,21 @@ class ViewController: GLKViewController {
         }
     }
     
+    public func createAnimals() {
+        if (!spawned0) {
+            spawned0 = true
+        } else if (!spawned1) {
+                spawned1 = true
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         refreshData.lastOpened = Int(Date().timeIntervalSinceReferenceDate)
         
-        dateLabelTest.frame = CGRect(x: 15, y: 15, width: 300, height: 200)
+        dateLabelTest.frame = CGRect(x: 25, y: 0, width: 300, height: 100)
+        dateLabelTest.textColor = UIColor.white
         self.view.addSubview(dateLabelTest)
         setupGL()
         
@@ -52,12 +65,18 @@ class ViewController: GLKViewController {
     }
     
     override func glkView(_ view: GLKView, drawIn drawBackdrop: CGRect) {
+        rect = drawBackdrop
         glesRenderer.loadBackdrop()
-        glesRenderer.draw(drawBackdrop) //??? what is CGRect T_T
-        glesRenderer.loadAnimal()
-        glesRenderer.drawAnml(drawBackdrop)
-        glesRenderer.loadAnimal2()
-        glesRenderer.drawAnml(drawBackdrop)
+        glesRenderer.draw(rect) //??? what is CGRect T_T
+        if (spawned0) {
+            glesRenderer.loadAnimal()
+            glesRenderer.drawAnml(drawBackdrop)
+        }
+        
+        if(spawned1) {
+            glesRenderer.loadAnimal2()
+            glesRenderer.drawAnml(drawBackdrop)
+        }
     }
 
 }

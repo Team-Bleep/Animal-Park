@@ -7,7 +7,7 @@
 
 struct  CurrencyHandler {
     // multiplier increases currency depending on time (in seconds)
-    static let TimeCurrencyMultiplier = 5
+    static let TimeCurrencyMultiplier = 1
     
     static func addCurrency(curr: Int) {
         UserDefaults.standard.set(UserDefaults.standard.integer(forKey:DefaultKeys.currency)+curr, forKey: DefaultKeys.currency)

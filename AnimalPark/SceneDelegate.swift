@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive
         calculateElapsedTime()
         //dateLabelTest.text = refreshData.elapsedTime.description + " seconds since last opened"
-        CurrencyHandler.addCurrency(curr: refreshData.elapsedTime * CurrencyHandler.TimeCurrencyMultiplier)
+        CurrencyHandler.addCurrency(curr: refreshData.elapsedTime/10 * CurrencyHandler.TimeCurrencyMultiplier)
         dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
         spawnAnimals()
     }
@@ -39,10 +39,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func spawnAnimals() {
         let spawnTime = 5 // time it takes for animal to spawn
         // despawn current animals depending on elapsed time
+        if (refreshData.elapsedTime < spawnTime) {
+            return
+        }
         
-        for _ in 1...refreshData.elapsedTime/spawnTime {
+        for _ in 0...Int(refreshData.elapsedTime/spawnTime) {
             if (Int.random(in: 0..<2)) == 0 {
                 // spawn animal
+                //ViewController.createAnimals()
+                //ViewController.createAnimals()
+                if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
+                    current.createAnimals()
+                    print("spawned")
+                }
             }
         }
         
