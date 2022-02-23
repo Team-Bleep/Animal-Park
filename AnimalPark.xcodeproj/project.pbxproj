@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		7944D33A27C61CC200CA1A56 /* Animal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33927C61CC200CA1A56 /* Animal.swift */; };
+		7944D33C27C6395500CA1A56 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33B27C6395500CA1A56 /* Store.swift */; };
+		7944D33E27C644B300CA1A56 /* Toy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33D27C644B300CA1A56 /* Toy.swift */; };
 		D5DAEE9227C1F79900631DF9 /* CurrencyHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */; };
 		D82C378227AE4B5D00256AD9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82C378127AE4B5D00256AD9 /* AppDelegate.swift */; };
 		D82C378427AE4B5D00256AD9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82C378327AE4B5D00256AD9 /* SceneDelegate.swift */; };
@@ -24,6 +26,8 @@
 
 /* Begin PBXFileReference section */
 		7944D33927C61CC200CA1A56 /* Animal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animal.swift; sourceTree = "<group>"; };
+		7944D33B27C6395500CA1A56 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		7944D33D27C644B300CA1A56 /* Toy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toy.swift; sourceTree = "<group>"; };
 		D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyHandler.swift; sourceTree = "<group>"; };
 		D82C377E27AE4B5D00256AD9 /* AnimalPark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimalPark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D82C378127AE4B5D00256AD9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -58,6 +62,8 @@
 			isa = PBXGroup;
 			children = (
 				7944D33927C61CC200CA1A56 /* Animal.swift */,
+				7944D33B27C6395500CA1A56 /* Store.swift */,
+				7944D33D27C644B300CA1A56 /* Toy.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -204,8 +210,10 @@
 				D82C378627AE4B5D00256AD9 /* ViewController.swift in Sources */,
 				D82C378227AE4B5D00256AD9 /* AppDelegate.swift in Sources */,
 				D82C378427AE4B5D00256AD9 /* SceneDelegate.swift in Sources */,
+				7944D33C27C6395500CA1A56 /* Store.swift in Sources */,
 				D8F0C21727C11FFF002BA60B /* Renderer.mm in Sources */,
 				7944D33A27C61CC200CA1A56 /* Animal.swift in Sources */,
+				7944D33E27C644B300CA1A56 /* Toy.swift in Sources */,
 				D85032FF27C0E9310045BD14 /* GLESRenderer.cpp in Sources */,
 				D5DAEE9227C1F79900631DF9 /* CurrencyHandler.swift in Sources */,
 			);
