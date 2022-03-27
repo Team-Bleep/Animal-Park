@@ -30,10 +30,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive
         calculateElapsedTime()
-        //dateLabelTest.text = refreshData.elapsedTime.description + " seconds since last opened"
-        CurrencyHandler.addCurrency(curr: refreshData.elapsedTime/10 * CurrencyHandler.TimeCurrencyMultiplier)
+        
+        // TEMP FOR TESTING: currency booster
+        //CurrencyHandler.addCurrency(curr: refreshData.elapsedTime/10 * CurrencyHandler.TimeCurrencyMultiplier)
+        CurrencyHandler.addCurrency(curr: refreshData.elapsedTime)
+        
         dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
+        foodLeftText.text = FoodHandler.getFood().description + "% Food Remaining"
+        decreaseFood()
         spawnAnimals()
+    }
+    
+    func decreaseFood() {
+        let decreaseTime = 5 // amount of time it takes for 1% food depletion
+        FoodHandler.removeFood(fd: refreshData.elapsedTime/decreaseTime)
     }
     
     func spawnAnimals() {
