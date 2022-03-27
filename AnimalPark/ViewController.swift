@@ -6,9 +6,14 @@
 //
 
 import UIKit
-let dateLabelTest = UILabel()
-let defaults = UserDefaults.standard
 import GLKit
+import SwiftUI
+
+let dateLabelTest = UILabel()
+let foodLeftText = UILabel()
+let foodRefillButton = UIButton()
+let foodCostText = UILabel()
+let defaults = UserDefaults.standard
 
 extension ViewController: GLKViewControllerDelegate {
     func glkViewControllerUpdate(_ controller: GLKViewController) {
@@ -54,6 +59,25 @@ class ViewController: GLKViewController {
         dateLabelTest.frame = CGRect(x: 25, y: 0, width: 300, height: 100)
         dateLabelTest.textColor = UIColor.white
         self.view.addSubview(dateLabelTest)
+        
+        foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-60, width: 300, height: 50)
+        foodLeftText.textColor = UIColor.white
+        self.view.addSubview(foodLeftText)
+        
+        foodCostText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-25, width: 300, height: 20)
+        foodCostText.textColor = UIColor.white
+        foodCostText.font = foodCostText.font.withSize(14)
+        foodCostText.text = "Refill Cost: " + String(FoodHandler.FoodCost) + " Animal Coins";
+        self.view.addSubview(foodCostText)
+        
+        foodRefillButton.backgroundColor = .gray;
+        foodRefillButton.layer.borderColor = UIColor.black.cgColor;
+        foodRefillButton.layer.borderWidth = 2;
+        foodRefillButton.setTitle("Refill Food", for: .normal);
+        foodRefillButton.frame = CGRect(x: UIScreen.main.bounds.width - 135, y: UIScreen.main.bounds.height-55, width: 130, height:50);
+        foodRefillButton.addTarget(self, action: #selector(refillFoodClicked(sender:)), for: .touchUpInside);
+        self.view.addSubview(foodRefillButton);
+        
         setupGL()
         
         // Check if first time opening app, initializes currency saver
@@ -62,6 +86,11 @@ class ViewController: GLKViewController {
             UserDefaults.standard.set(false, forKey: "firstLaunch")
         }
        
+    }
+    
+    @objc func refillFoodClicked(sender:UIButton!) {
+        FoodHandler.fillFood();
+        print("Food Added");
     }
     
     override func glkView(_ view: GLKView, drawIn drawBackdrop: CGRect) {
@@ -84,8 +113,10 @@ class ViewController: GLKViewController {
 struct refreshData {
     static var elapsedTime = 0
     static var lastOpened = 0
+    static var currentFood = 0
 }
 
 struct DefaultKeys {
     static let currency = "currency"
+    static let food = "food"
 }

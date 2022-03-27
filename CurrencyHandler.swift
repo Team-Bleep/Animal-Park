@@ -19,6 +19,7 @@ struct  CurrencyHandler {
             return false
         }
         UserDefaults.standard.set(UserDefaults.standard.integer(forKey:DefaultKeys.currency)-curr, forKey: DefaultKeys.currency)
+        dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
         return true
     }
     
