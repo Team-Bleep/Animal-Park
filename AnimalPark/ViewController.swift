@@ -12,6 +12,7 @@ import SwiftUI
 let dateLabelTest = UILabel()
 let foodLeftText = UILabel()
 let foodRefillButton = UIButton()
+let foodCostText = UILabel()
 let defaults = UserDefaults.standard
 
 extension ViewController: GLKViewControllerDelegate {
@@ -59,9 +60,15 @@ class ViewController: GLKViewController {
         dateLabelTest.textColor = UIColor.white
         self.view.addSubview(dateLabelTest)
         
-        foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-50, width: 300, height: 50)
+        foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-60, width: 300, height: 50)
         foodLeftText.textColor = UIColor.white
         self.view.addSubview(foodLeftText)
+        
+        foodCostText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-25, width: 300, height: 20)
+        foodCostText.textColor = UIColor.white
+        foodCostText.font = foodCostText.font.withSize(14)
+        foodCostText.text = "Refill Cost: " + String(FoodHandler.FoodCost) + " Animal Coins";
+        self.view.addSubview(foodCostText)
         
         foodRefillButton.backgroundColor = .gray;
         foodRefillButton.layer.borderColor = UIColor.black.cgColor;
