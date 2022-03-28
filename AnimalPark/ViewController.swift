@@ -85,7 +85,8 @@ class ViewController: GLKViewController {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
             UserDefaults.standard.set(false, forKey: "firstLaunch")
         }
-       
+        
+        MusicPlayer.Instance.startBgMusic()
     }
     
     @objc func refillFoodClicked(sender:UIButton!) {
