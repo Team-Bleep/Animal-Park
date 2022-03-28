@@ -20,6 +20,7 @@
 - (void)update;
 - (void)draw:(CGRect)drawBackdrop;
 - (void)drawAnml:(CGRect)drawAnimal;
+- (void)setRandomAnimalTexture;
 
 @end
 

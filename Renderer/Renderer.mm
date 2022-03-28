@@ -60,6 +60,14 @@ enum{
     animalNumIndices = glesRenderer.GenAnimal2(1.0f, &vertices, &normals, &indices);
 }
 
+- (void) setRandomAnimalTexture; {
+    //animalTextures = [self setupTexture: @"crate.jpg"];
+    glActiveTexture(GL_TEXTURE0);
+    //glBindTexture(GL_TEXTURE_2D, backdropTexture);
+    glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
+    NSLog(@"asdasdasasas");
+}
+
 - (void) setup:(GLKView *)view {
     view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     

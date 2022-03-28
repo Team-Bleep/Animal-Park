@@ -14,6 +14,8 @@ let foodLeftText = UILabel()
 let foodRefillButton = UIButton()
 let foodCostText = UILabel()
 let defaults = UserDefaults.standard
+var numOfAnimalTextures: Int = 0
+
 
 extension ViewController: GLKViewControllerDelegate {
     func glkViewControllerUpdate(_ controller: GLKViewController) {
@@ -85,7 +87,33 @@ class ViewController: GLKViewController {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
             UserDefaults.standard.set(false, forKey: "firstLaunch")
         }
-       
+        
+        numOfAnimalTextures = getNumberOfAnimalTextures()
+        setRandomAnimalTexture();
+    }
+    
+    func setRandomAnimalTexture(){
+        if (numOfAnimalTextures <= 0){
+            print("ERROR: Animal images could not be found. Please make sure the file path is correct and that there are images in the Textures/Animals folder.");
+            return;
+        }
+        let hi = Int.random(in: 0..<numOfAnimalTextures);
+        
+        glesRenderer.setRandomAnimalTexture();
+    }
+    
+    func getNumberOfAnimalTextures() -> Int {
+        var path = #file
+        path.removeLast(31);
+        path += "Textures/Animals";
+        
+        do {
+            let content = try FileManager.default.contentsOfDirectory(atPath: path);
+            return content.count;
+        } catch {
+            print("ERROR: Unable to get animal textures from this file path: " + path);
+            return -1;
+        }
     }
     
     @objc func refillFoodClicked(sender:UIButton!) {
