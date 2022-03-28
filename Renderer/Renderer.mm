@@ -1,13 +1,11 @@
 //
-//  Renderer.m
-//  AnimalPark
-//
-//  Created by Mohammed Bajaman on 2022-02-19.
+//  Copyright © 2017 Borna Noureddin. All rights reserved.
 //
 
 #import "Renderer.h"
 #import <Foundation/Foundation.h>
 #import <GLKit/GLKit.h>
+#include <chrono>
 #include "GLESRenderer.hpp"
 
 // small struct to hold object-specific information
@@ -28,30 +26,32 @@ struct RenderObject
     int *indices, numIndices;
 };
 
+// macro to hep with GL calls
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-enum {
+// uniform variables for shaders
+enum
+{
     UNIFORM_MODELVIEWPROJECTION_MATRIX,
     UNIFORM_MODELVIEW_MATRIX,
-    UNIFORM_LIGHT_DIFFUSE_POSITION,
-    UNIFORM_LIGHT_DIFFUSE_COMPONENT,
     UNIFORM_NORMAL_MATRIX,
-    UNIFORM_PASSTHROUGH,
-    UNIFORM_SHADEINFRAG,
-    UNIFORM_USE_TEXTURE,
     UNIFORM_TEXTURE,
     UNIFORM_LIGHT_SPECULAR_POSITION,
-    UNIFORM_LIGHT_SPECULAR_COMPONENT,
-    UNIFORM_LIGHT_AMBIENT_COMPONENT,
+    UNIFORM_LIGHT_DIFFUSE_POSITION,
+    UNIFORM_LIGHT_DIFFUSE_COMPONENT,
     UNIFORM_LIGHT_SHININESS,
+    UNIFORM_LIGHT_SPECULAR_COMPONENT,
+    UNIFORM_LIGHT_AMBIENT_COMPONENT,\
+    UNIFORM_USE_TEXTURE,
     NUM_UNIFORMS
 };
 GLint uniforms[NUM_UNIFORMS];
 
-enum{
-    ATTRIB_VERTEX,
-    ATTRIB_NORMAL,
+// vertex attributes
+enum
+{
     ATTRIB_POSITION,
+    ATTRIB_NORMAL,
     ATTRIB_TEXTURE,
     NUM_ATTRIBUTES
 };
@@ -59,170 +59,189 @@ enum{
 @interface Renderer () {
     GLKView *theView;
     GLESRenderer glesRenderer;
-    
+    std::chrono::time_point<std::chrono::steady_clock> lastTime;
+
+    // OpenGL IDs
     GLuint programObject;
-    GLuint backdropTexture;
-    
+    GLuint crateTexture;
+    GLuint mapTexture;
+
     // global lighting parameters
     GLKVector4 specularLightPosition;
     GLKVector4 specularComponent;
     GLfloat shininess;
     GLKVector4 ambientComponent;
     
-    RenderObject animals[4];
+    // render objects
+    RenderObject objects[4];
     RenderObject backdrop;
+
+    // moving camera automatically
+    float dist, distIncr;
 }
 
 @end
 
-@implementation Renderer;
+@implementation Renderer
 
-- (void)dealloc {
+- (void)dealloc
+{
     glDeleteProgram(programObject);
 }
 
-- (void) loadBackdrop{
-    glGenVertexArrays(1, &backdrop.vao);
-    glGenBuffers(1, &backdrop.ibo);
-    
-    backdrop.numIndices = glesRenderer.GenCube(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
-    
-    // set up VBOs (one per attribute)
-    glBindVertexArray(backdrop.vao);
-    GLuint vbo[3];
-    glGenBuffers(3, vbo);
+- (void)loadBackdrop
+{
+        // cube (centre, textured)
+        glGenVertexArrays(1, &backdrop.vao);
+        glGenBuffers(1, &backdrop.ibo);
 
-    // pass on position data
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.vertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(ATTRIB_POSITION);
-    glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
-
-    // pass on normals
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.normals, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(ATTRIB_NORMAL);
-    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
-
-    // pass on texture coordinates
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-    glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), backdrop.texCoords, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(ATTRIB_TEXTURE);
-    glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backdrop.indices[0]) * backdrop.numIndices, backdrop.indices, GL_STATIC_DRAW);
-
-    glBindVertexArray(0);
-}
-
-- (void) loadAnimal{
-    
-    
-    for(int i = 0; i < sizeof(animals)/sizeof(animals[0]); i=i+1) {
-        glGenVertexArrays(1, &animals[i].vao);
-        glGenBuffers(1, &animals[i].ibo);
-
-        // get animal data
-        animals[i].numIndices = glesRenderer.GenAnimal(1.0f, &animals[i].vertices, &animals[i].normals, &animals[i].texCoords,&animals[i].indices);
+        // get cube data
+       backdrop.numIndices = glesRenderer.GenCube(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
 
         // set up VBOs (one per attribute)
-        glBindVertexArray(animals[i].vao);
+        glBindVertexArray(backdrop.vao);
         GLuint vbo[3];
         glGenBuffers(3, vbo);
 
         // pass on position data
         glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), animals[i].vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.vertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(ATTRIB_POSITION);
         glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
 
         // pass on normals
         glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), animals[i].normals, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.normals, GL_STATIC_DRAW);
         glEnableVertexAttribArray(ATTRIB_NORMAL);
         glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
 
         // pass on texture coordinates
         glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-        glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), animals[i].texCoords, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), backdrop.texCoords, GL_STATIC_DRAW);
         glEnableVertexAttribArray(ATTRIB_TEXTURE);
         glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, animals[i].ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(animals[i].indices[0]) * animals[i].numIndices, animals[i].indices, GL_STATIC_DRAW);
-    }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backdrop.indices[0]) * backdrop.numIndices, backdrop.indices, GL_STATIC_DRAW);
+    
+    // deselect the VAOs just to be clean
     glBindVertexArray(0);
 }
 
-- (void) setup:(GLKView *)view {
+- (void)loadAnimal
+{
+    // -------------- Load maze objects
+    for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+            
+            // cube (centre, textured)
+            glGenVertexArrays(1, &objects[i].vao);
+            glGenBuffers(1, &objects[i].ibo);
+
+            // get cube data
+            objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
+
+            // set up VBOs (one per attribute)
+            glBindVertexArray(objects[i].vao);
+            GLuint vbo[3];
+            glGenBuffers(3, vbo);
+
+            // pass on position data
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+            glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), objects[i].vertices, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(ATTRIB_POSITION);
+            glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+            // pass on normals
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+            glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), objects[i].normals, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(ATTRIB_NORMAL);
+            glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+            // pass on texture coordinates
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+            glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), objects[i].texCoords, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(ATTRIB_TEXTURE);
+            glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objects[i].ibo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(objects[i].indices[0]) * objects[i].numIndices, objects[i].indices, GL_STATIC_DRAW);
+        
+    }
+    // deselect the VAOs just to be clean
+    glBindVertexArray(0);
+}
+
+- (void)setup:(GLKView *)view
+{
     view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     
-    if(!view.context) {
+    if (!view.context) {
         NSLog(@"Failed to create ES context");
     }
     
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     theView = view;
     [EAGLContext setCurrentContext:view.context];
-    if(![self setupShaders]){
-        NSLog(@"SHADERS WHERE BRO?");
+    if (![self setupShaders])
         return;
-    }
-       
+    crateTexture = [self setupTexture:@"park.png"];
+
     // set up lighting values
-    specularComponent = GLKVector4Make(0.8f, 0.0f, 0.0f, 1.0f);
+    specularComponent = GLKVector4Make(0.8f, 0.1f, 0.1f, 1.0f);
     specularLightPosition = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
     shininess = 200.0f;
     
     ambientComponent = GLKVector4Make(0.46f, 0.78f, 0.9f, 1.0f);
     
-    for(int i = 0; i < sizeof(animals)/sizeof(animals[0]); i = i+1) {
-        animals[i].diffuseLightPosition = GLKVector4Make(0.0f, 1.0f, 0.0f, 1.0f);
-        animals[i].diffuseComponent = GLKVector4Make(0.2f,0.0f,0.0f,1.0f);
+    for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+            objects[i].diffuseLightPosition = GLKVector4Make(0.0f, 1.0f, 0.0f, 1.0f);
+            objects[i].diffuseComponent = GLKVector4Make(0.0f, 0.0f, 0.0f, 1.0f);
     }
     
-    backdrop.diffuseLightPosition = GLKVector4Make(0.0f, 1.0f, 0.0f, 1.0f);
-    backdrop.diffuseComponent = GLKVector4Make(0.2f,0.0f,0.0f,1.0f);
+    backdrop.diffuseLightPosition = GLKVector4Make(-1.0f, 0.0f, 0.0f, 1.0f);
+    backdrop.diffuseComponent = GLKVector4Make(0.0f, 0.0f, 0.4f, 1.0f);
     
-    
-    //backdropTexture = [self setupTexture:@"park.png"];
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, backdropTexture);
-    //glUniform1i(uniforms[UNIFORM_TEXTURE], 1);
-    
-    
-    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+    // Set background/sky colour
+    glClearColor (0.0f, 0.0f, 0.4f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    lastTime = std::chrono::steady_clock::now();
 }
 
-- (void)update {
-
-    //modelViewProjection = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -5.0);
-    //normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewProjection), NULL);
+- (void)update
+{
+    ambientComponent = GLKVector4Make(0.16f, 0.48f, 0.6f, 1.0f);
+    //glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
     
-    float aspect = (float)theView.drawableWidth /  (float)theView.drawableHeight;
+    // make specular light move with camera
+    specularLightPosition = GLKVector4Make(dist, 0.0f, 0.0f, 1.0f);
+    
+    GLKVector4 specComponentFlashOff = GLKVector4Make(0.4f, 0.2f, 0.2f, 0.1f);
+    float shininessFlashOff = 200.0;
+    shininess = shininessFlashOff;
+    specularComponent = specComponentFlashOff;
+    
+    // perspective projection matrix
+    float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
     GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
-    //GLKMatrix4 projectionMatrix = GLKMatrix4Multiply(perspective, modelViewProjection);
-    
-    backdrop.mvp = GLKMatrix4Translate(GLKMatrix4Identity, -1.0, 0.0, -5.0);
-   // backdrop.mvp = GLKMatrix4Rotate(backdrop.mvp, 0.0f, 1.0f, 0.0f, 0.0f);
-    backdrop.mvm = backdrop.mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, 1.0, 0.0, 1.0), backdrop.mvp);
+
+    // backdrop
+    backdrop.mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -3.0, 0.2, -5.0),4.0,4.0,0.0);
+    backdrop.mvp = GLKMatrix4Rotate(backdrop.mvp, 1.57f, 1.0,0.0,0.0);
+    backdrop.mvm = backdrop.mvp =   GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, 3, -0.5, 0), backdrop.mvp);
     backdrop.normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(backdrop.mvp), NULL);
-
     backdrop.mvp = GLKMatrix4Multiply(perspective, backdrop.mvp);
-    
-    //for(int i = 0; i < sizeof(animals)/sizeof(animals[0]); i = i+1) {
-        //animals[i].mvp = GLKMatrix4Translate(GLKMatrix4Identity, 7.0, 0.75, 2.0);
-       // animals[i].mvp = GLKMatrix4Rotate(animals[i].mvp, 0.0f, 1.0f, 0.0f, 0.0f);
-        //animals[i].mvm = animals[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, 1.0, 0.0, 1.0), animals[i].mvp);
-        //animals[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(animals[i].mvp), NULL);
 
-        //animals[i].mvp = GLKMatrix4Multiply(perspective, animals[i].mvp);
-    //}
+    for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+        objects[i].mvp = GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0);
+        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
+        objects[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(objects[i].mvp), NULL);
+        objects[i].mvp = GLKMatrix4Multiply(perspective, objects[i].mvp);
+    }
 }
 
-- (void)draw:(CGRect)drawRect; {
+- (void)draw:(CGRect)drawRect;
+{
     // pass on global lighting, fog and texture values
     glUniform4fv(uniforms[UNIFORM_LIGHT_SPECULAR_POSITION], 1, specularLightPosition.v);
     glUniform1i(uniforms[UNIFORM_LIGHT_SHININESS], shininess);
@@ -234,7 +253,6 @@ enum{
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
     
-    backdropTexture = [self setupTexture:@"crate.jpg"];
     glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
     glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, backdrop.diffuseLightPosition.v);
     glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, backdrop.diffuseComponent.v);
@@ -246,26 +264,23 @@ enum{
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
     glDrawElements(GL_TRIANGLES, (GLsizei)backdrop.numIndices, GL_UNSIGNED_INT, 0);
 
-}
-
-- (void)drawAnml:(CGRect)drawAnimal; {
-    
-    for(int i = 0; i < sizeof(animals)/sizeof(animals[0]); i = i+1) {
-        glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
-        glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, animals[i].diffuseLightPosition.v);
-        glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, animals[i].diffuseComponent.v);
-        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)animals[i].mvp.m);
-        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, FALSE, (const float *)animals[i].mvm.m);
-        glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, animals[i].normalMatrix.m);
+    for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+            glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
+        glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, objects[i].diffuseLightPosition.v);
+        glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, objects[i].diffuseComponent.v);
+        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)objects[i].mvp.m);
+        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, FALSE, (const float *)objects[i].mvm.m);
+        glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, objects[i].normalMatrix.m);
         
-        glBindVertexArray(animals[i].vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, animals[i].ibo);
-        glDrawElements(GL_TRIANGLES, (GLsizei)animals[i].numIndices, GL_UNSIGNED_INT, 0);
-
+        glBindVertexArray(objects[i].vao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objects[i].ibo);
+        glDrawElements(GL_TRIANGLES, (GLsizei)objects[i].numIndices, GL_UNSIGNED_INT, 0);
     }
 }
 
-- (bool)setupShaders{
+
+- (bool)setupShaders
+{
     // Load shaders
     char *vShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"VertexShader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"VertexShader.vsh"] pathExtension]] cStringUsingEncoding:1]);
     char *fShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"FragmentShader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"FragmentShader.fsh"] pathExtension]] cStringUsingEncoding:1]);
@@ -288,7 +303,10 @@ enum{
     return true;
 }
 
-- (GLuint) setupTexture:(NSString *)fileName {
+
+// Load in and set up texture image (adapted from Ray Wenderlich)
+- (GLuint)setupTexture:(NSString *)fileName
+{
     CGImageRef spriteImage = [UIImage imageNamed:fileName].CGImage;
     if (!spriteImage) {
         NSLog(@"Failed to load image %@", fileName);
@@ -298,9 +316,9 @@ enum{
     size_t width = CGImageGetWidth(spriteImage);
     size_t height = CGImageGetHeight(spriteImage);
     
-    GLubyte *spriteData2 = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
+    GLubyte *spriteData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
     
-    CGContextRef spriteContext = CGBitmapContextCreate(spriteData2, width, height, 8, width*4, CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
+    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width*4, CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
     
     CGContextDrawImage(spriteContext, CGRectMake(0, 0, width, height), spriteImage);
     
@@ -312,15 +330,12 @@ enum{
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData2);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
     
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-    
-    free(spriteData2);
+    free(spriteData);
     return texName;
-
 }
-    
 
 @end
+
+
