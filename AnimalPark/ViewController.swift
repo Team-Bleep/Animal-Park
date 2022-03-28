@@ -45,7 +45,7 @@ class ViewController: GLKViewController {
     }
     
     public func createAnimals() {
-        glesRenderer.loadAnimal()
+        glesRenderer.loadAnimal(Int32.random(in: 1..<5))
     }
     
     override func viewDidLoad() {

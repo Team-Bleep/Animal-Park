@@ -24,6 +24,8 @@ struct RenderObject
     // vertex data
     float *vertices, *normals, *texCoords;
     int *indices, numIndices;
+    
+    float animalSpawnPosX, animalSpawnPosY;
 };
 
 // macro to hep with GL calls
@@ -75,6 +77,8 @@ enum
     // render objects
     RenderObject objects[4];
     RenderObject backdrop;
+    
+    int animalCount;
 
     // moving camera automatically
     float dist, distIncr;
@@ -128,8 +132,9 @@ enum
     glBindVertexArray(0);
 }
 
-- (void)loadAnimal
+- (void)loadAnimal:(int)animalCountx
 {
+    animalCount = animalCountx;
     // -------------- Load maze objects
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
             
@@ -166,6 +171,8 @@ enum
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objects[i].ibo);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(objects[i].indices[0]) * objects[i].numIndices, objects[i].indices, GL_STATIC_DRAW);
         
+        objects[i].animalSpawnPosX = arc4random_uniform(3) + 1;
+        objects[i].animalSpawnPosY = (arc4random_uniform(15) - 1.5)/10;
     }
     // deselect the VAOs just to be clean
     glBindVertexArray(0);
@@ -231,9 +238,12 @@ enum
     backdrop.normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(backdrop.mvp), NULL);
     backdrop.mvp = GLKMatrix4Multiply(perspective, backdrop.mvp);
 
-    for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
-        objects[i].mvp = GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0);
-        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
+    for(int i = 0; i < animalCount; i = i+1) {
+        objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0),1.0,1.0,0.1);
+        //objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
+        // xrand: 1 to 3
+        // yrand: -1.5 to 1.5
+        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, objects[i].animalSpawnPosX, objects[i].animalSpawnPosY, 0), objects[i].mvp);
         objects[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(objects[i].mvp), NULL);
         objects[i].mvp = GLKMatrix4Multiply(perspective, objects[i].mvp);
     }

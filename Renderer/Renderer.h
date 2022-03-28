@@ -15,7 +15,7 @@
 
 - (void)setup:(GLKView *)view;
 - (void)loadBackdrop;
-- (void)loadAnimal;
+- (void)loadAnimal:(int)animalCount;
 - (void)update;
 - (void)draw:(CGRect)drawBackdrop;
 
