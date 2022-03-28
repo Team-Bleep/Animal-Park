@@ -202,7 +202,7 @@ enum
     backdrop.diffuseComponent = GLKVector4Make(0.0f, 0.0f, 0.4f, 1.0f);
     
     // Set background/sky colour
-    glClearColor (0.0f, 0.0f, 0.4f, 1.0f);
+    glClearColor (0.4375f, 0.7695f, 0.976f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     lastTime = std::chrono::steady_clock::now();
