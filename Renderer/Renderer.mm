@@ -41,7 +41,7 @@ enum
     UNIFORM_LIGHT_DIFFUSE_COMPONENT,
     UNIFORM_LIGHT_SHININESS,
     UNIFORM_LIGHT_SPECULAR_COMPONENT,
-    UNIFORM_LIGHT_AMBIENT_COMPONENT,\
+    UNIFORM_LIGHT_AMBIENT_COMPONENT,
     UNIFORM_USE_TEXTURE,
     NUM_UNIFORMS
 };
@@ -184,25 +184,25 @@ enum
     [EAGLContext setCurrentContext:view.context];
     if (![self setupShaders])
         return;
-    crateTexture = [self setupTexture:@"park.png"];
+    
 
     // set up lighting values
-    specularComponent = GLKVector4Make(0.8f, 0.1f, 0.1f, 1.0f);
+    specularComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
     specularLightPosition = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
     shininess = 200.0f;
     
-    ambientComponent = GLKVector4Make(0.46f, 0.78f, 0.9f, 1.0f);
+    ambientComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
     
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
             objects[i].diffuseLightPosition = GLKVector4Make(0.0f, 1.0f, 0.0f, 1.0f);
-            objects[i].diffuseComponent = GLKVector4Make(0.0f, 0.0f, 0.0f, 1.0f);
+            objects[i].diffuseComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
     }
     
-    backdrop.diffuseLightPosition = GLKVector4Make(-1.0f, 0.0f, 0.0f, 1.0f);
-    backdrop.diffuseComponent = GLKVector4Make(0.0f, 0.0f, 0.4f, 1.0f);
+    backdrop.diffuseLightPosition = GLKVector4Make(0.0f, 2.0f, 2.0f, 1.0f);
+    backdrop.diffuseComponent = GLKVector4Make(0.5375f, 0.8695f, 1.076f, 1.0f);
     
     // Set background/sky colour
-    glClearColor (0.4375f, 0.7695f, 0.976f, 1.0f);
+    glClearColor(0.5764f, 0.74509f, 0.929411f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     lastTime = std::chrono::steady_clock::now();
@@ -210,11 +210,10 @@ enum
 
 - (void)update
 {
-    ambientComponent = GLKVector4Make(0.16f, 0.48f, 0.6f, 1.0f);
-    //glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
+    //ambientComponent = GLKVector4Make(0.16f, 0.48f, 0.6f, 1.0f);
     
     // make specular light move with camera
-    specularLightPosition = GLKVector4Make(dist, 0.0f, 0.0f, 1.0f);
+    specularLightPosition = GLKVector4Make(0.0, 0.0f, -15.0f, 1.0f);
     
     GLKVector4 specComponentFlashOff = GLKVector4Make(0.4f, 0.2f, 0.2f, 0.1f);
     float shininessFlashOff = 200.0;
@@ -243,16 +242,18 @@ enum
 - (void)draw:(CGRect)drawRect;
 {
     // pass on global lighting, fog and texture values
+    
     glUniform4fv(uniforms[UNIFORM_LIGHT_SPECULAR_POSITION], 1, specularLightPosition.v);
     glUniform1i(uniforms[UNIFORM_LIGHT_SHININESS], shininess);
     glUniform4fv(uniforms[UNIFORM_LIGHT_SPECULAR_COMPONENT], 1, specularComponent.v);
     glUniform4fv(uniforms[UNIFORM_LIGHT_AMBIENT_COMPONENT], 1, ambientComponent.v);
-
+    
     // set up GL for drawing
     glViewport(0, 0, (int)theView.drawableWidth, (int)theView.drawableHeight);
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
     
+    crateTexture = [self setupTexture:@"parkbg.png"];
     glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
     glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, backdrop.diffuseLightPosition.v);
     glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, backdrop.diffuseComponent.v);
@@ -264,8 +265,9 @@ enum
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
     glDrawElements(GL_TRIANGLES, (GLsizei)backdrop.numIndices, GL_UNSIGNED_INT, 0);
 
+    crateTexture = [self setupTexture:@"crate.jpg"];
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
-            glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
+        glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
         glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, objects[i].diffuseLightPosition.v);
         glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, objects[i].diffuseComponent.v);
         glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)objects[i].mvp.m);
