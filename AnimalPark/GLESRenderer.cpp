@@ -177,57 +177,7 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     return numIndices;
 }
 
-int GLESRenderer::GenAnimal(float scale, float **vertices, float **normals, int **indices){
-    
-    int i;
-    int numVertices = 4;
-    int numIndices = 6;
-    
-    float squareVerts[] = {
-        -0.5f, -0.5f, 3.0f,  //Bottom Left
-        -0.5f, -0.25f,  3.0f,  //Top Left
-        -0.25f, -0.5f,  3.0f, //Bottom Right
-        -0.25f, -0.25f,  3.0f,  //Top Right
-    };
-    
-    float squareNormals[] = {
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-    };
-    
-    // Memory for buffers - VERTICES
-    if(vertices!=NULL){
-        *vertices = (float *) malloc(sizeof(float) * 3 * numVertices);
-        memcpy(*vertices, squareVerts, sizeof(squareVerts));
-        
-        for(i = 0; i < numVertices * 3; i++){
-            (*vertices) [i] *= scale;
-        }
-    }
-    
-    // Memory for buffers - NORMALS
-    if(normals!=NULL){
-        *normals = (float *) malloc(sizeof(float) * 3 * numVertices);
-        memcpy(*normals, squareNormals, sizeof(squareNormals));
-    }
-    
-    // Memory for buffers - INDICES + Generation of indices
-    if(indices!=NULL){
-        GLuint squareIndices[] = {
-            0,1,2,
-            1,3,2
-        };
-        
-        *indices = (int *) malloc(sizeof(int) * numIndices);
-        memcpy(*indices, squareIndices, sizeof(squareIndices));
-    }
-    
-    return numIndices;
-};
-
-int GLESRenderer::GenAnimal2(float scale, float **vertices, float **normals, int **indices){
+int GLESRenderer::GenAnimal(float scale, float **vertices, float **normals, float **texCoords, int **indices){
     
     int i;
     int numVertices = 4;
@@ -247,6 +197,13 @@ int GLESRenderer::GenAnimal2(float scale, float **vertices, float **normals, int
         0.0f, 0.0f, 1.0f,
     };
     
+    float squareTex[] = {
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0,
+    };
+    
     // Memory for buffers - VERTICES
     if(vertices!=NULL){
         *vertices = (float *) malloc(sizeof(float) * 3 * numVertices);
@@ -263,6 +220,13 @@ int GLESRenderer::GenAnimal2(float scale, float **vertices, float **normals, int
         memcpy(*normals, squareNormals, sizeof(squareNormals));
     }
     
+    if ( texCoords != NULL )
+    {
+        *texCoords = (float *)malloc ( sizeof ( float ) * 2 * numVertices );
+        memcpy ( *texCoords, squareTex, sizeof ( squareTex ) ) ;
+    }
+
+    
     // Memory for buffers - INDICES + Generation of indices
     if(indices!=NULL){
         GLuint squareIndices[] = {
@@ -276,3 +240,145 @@ int GLESRenderer::GenAnimal2(float scale, float **vertices, float **normals, int
     
     return numIndices;
 };
+
+int GLESRenderer::GenCube(float scale, float **vertices, float **normals,
+                          float **texCoords, int **indices)
+{
+    int i;
+    int numVertices = 24;
+    int numIndices = 36;
+    
+    float cubeVerts[] =
+    {
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f, -0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, 0.5f,
+        -0.5f,  0.5f, 0.5f,
+        0.5f,  0.5f, 0.5f,
+        0.5f, -0.5f, 0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f, -0.5f,
+    };
+    
+    float cubeNormals[] =
+    {
+        0.0f, -1.0f, 0.0f,
+        0.0f, -1.0f, 0.0f,
+        0.0f, -1.0f, 0.0f,
+        0.0f, -1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        -1.0f, 0.0f, 0.0f,
+        -1.0f, 0.0f, 0.0f,
+        -1.0f, 0.0f, 0.0f,
+        -1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+    };
+    
+    float cubeTex[] =
+    {
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+    };
+    
+    // Allocate memory for buffers
+    if ( vertices != NULL )
+    {
+        *vertices = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
+        memcpy ( *vertices, cubeVerts, sizeof ( cubeVerts ) );
+        
+        for ( i = 0; i < numVertices * 3; i++ )
+        {
+            ( *vertices ) [i] *= scale;
+        }
+    }
+    
+    if ( normals != NULL )
+    {
+        *normals = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
+        memcpy ( *normals, cubeNormals, sizeof ( cubeNormals ) );
+    }
+    
+    if ( texCoords != NULL )
+    {
+        *texCoords = (float *)malloc ( sizeof ( float ) * 2 * numVertices );
+        memcpy ( *texCoords, cubeTex, sizeof ( cubeTex ) ) ;
+    }
+    
+    
+    // Generate the indices
+    if ( indices != NULL )
+    {
+        GLuint cubeIndices[] =
+        {
+            0, 2, 1,
+            0, 3, 2,
+            4, 5, 6,
+            4, 6, 7,
+            8, 9, 10,
+            8, 10, 11,
+            12, 15, 14,
+            12, 14, 13,
+            16, 17, 18,
+            16, 18, 19,
+            20, 23, 22,
+            20, 22, 21
+        };
+        
+        *indices = (int *)malloc ( sizeof ( int ) * numIndices );
+        memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
+    }
+    
+    return numIndices;
+}

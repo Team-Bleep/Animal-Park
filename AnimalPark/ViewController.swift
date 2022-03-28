@@ -38,6 +38,7 @@ class ViewController: GLKViewController {
             delegate = self as GLKViewControllerDelegate
             glesRenderer = Renderer()
             glesRenderer.setup(view)
+            glesRenderer.loadBackdrop()
            // Sending vertex data to Vertex Array
          //Replacing with other vertex data
         }
@@ -53,6 +54,7 @@ class ViewController: GLKViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupGL()
         // Do any additional setup after loading the view.
         refreshData.lastOpened = Int(Date().timeIntervalSinceReferenceDate)
         
@@ -78,8 +80,6 @@ class ViewController: GLKViewController {
         foodRefillButton.addTarget(self, action: #selector(refillFoodClicked(sender:)), for: .touchUpInside);
         self.view.addSubview(foodRefillButton);
         
-        setupGL()
-        
         // Check if first time opening app, initializes currency saver
         if UserDefaults.standard.object(forKey: "firstLaunch") == nil {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
@@ -93,19 +93,19 @@ class ViewController: GLKViewController {
         print("Food Added");
     }
     
-    override func glkView(_ view: GLKView, drawIn drawBackdrop: CGRect) {
-        rect = drawBackdrop
-        glesRenderer.loadBackdrop()
+    override func glkView(_ view: GLKView, drawIn rect: CGRect) {
+        //rect = drawBackdrop
+        //glesRenderer.loadBackdrop()
         glesRenderer.draw(rect) //??? what is CGRect T_T
-        if (spawned0) {
-            glesRenderer.loadAnimal()
-            glesRenderer.drawAnml(drawBackdrop)
-        }
+        //if (spawned0) {
+            //glesRenderer.loadAnimal()
+            //glesRenderer.drawAnml(drawBackdrop)
+        //}
         
-        if(spawned1) {
-            glesRenderer.loadAnimal2()
-            glesRenderer.drawAnml(drawBackdrop)
-        }
+        //if(spawned1) {
+            //glesRenderer.loadAnimal()
+            //glesRenderer.drawAnml(drawBackdrop)
+        //}
     }
 
 }
