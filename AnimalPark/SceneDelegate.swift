@@ -60,7 +60,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 //ViewController.createAnimals()
                 if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
                     current.createAnimals()
-                    print("spawned")
+                    MusicPlayer.Instance.playSfx(sfx: "musical-beep", ext: "wav")
                 }
             }
         }
