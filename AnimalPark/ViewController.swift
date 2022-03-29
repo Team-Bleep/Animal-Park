@@ -82,7 +82,7 @@ class ViewController: GLKViewController {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
             UserDefaults.standard.set(false, forKey: "firstLaunch")
         }
-        print("calling music player")
+
         MusicPlayer.Instance.startBgMusic()
     }
     
