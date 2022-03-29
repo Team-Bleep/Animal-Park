@@ -251,6 +251,16 @@ enum
         objects[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(objects[i].mvp), NULL);
         objects[i].mvp = GLKMatrix4Multiply(perspective, objects[i].mvp);
     }
+    
+    /// Movement section
+    // add random selection of direction to move each cube (4 values, one per cube)
+    // - Up (y), down (-y), left (-x), right (x)
+    // check for bounds (edges of walls -- don't add if value is more than specified edges)
+    
+    
+    // move each cube by specified amount per direction
+    // - translation matrix?
+    
 }
 
 - (void)draw:(CGRect)drawRect;
