@@ -11,6 +11,7 @@ import AVFoundation
 class MusicPlayer {
     static let Instance = MusicPlayer() // Singleton Instance
     var audioPlayer: AVAudioPlayer?
+    var sfxPlayer: AVAudioPlayer?
     
     func startBgMusic() {
         print("begin startBgMusic")
@@ -29,15 +30,19 @@ class MusicPlayer {
         }
     }
     
+    func stopBgMusic() {
+        guard let audioPlayer = audioPlayer else { return }
+        audioPlayer.stop()
+    }
+    
     func playSfx(sfx: String, ext: String) {
         if let bundle = Bundle.main.path(forResource: sfx, ofType: ext) {
             let sfxUrl = NSURL(fileURLWithPath: bundle)
             
             do {
-                audioPlayer = try AVAudioPlayer(contentsOf: sfxUrl as URL)
-                guard let audioPlayer = audioPlayer else { return }
-                audioPlayer.numberOfLoops = 1 // Play sfx without looping
-                audioPlayer.play()
+                sfxPlayer = try AVAudioPlayer(contentsOf: sfxUrl as URL)
+                guard let sfxPlayer = sfxPlayer else { return }
+                sfxPlayer.play() // Plays once without looping
             } catch {
                 print(error)
             }
