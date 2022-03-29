@@ -10,8 +10,8 @@ import AVFoundation
 
 class MusicPlayer {
     static let Instance = MusicPlayer() // Singleton Instance
-    var audioPlayer: AVAudioPlayer?
-    var sfxPlayer: AVAudioPlayer?
+    private var audioPlayer: AVAudioPlayer?
+    private var sfxPlayer: AVAudioPlayer?
     
     func startBgMusic() {
         print("begin startBgMusic")
