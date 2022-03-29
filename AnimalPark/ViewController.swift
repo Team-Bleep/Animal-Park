@@ -10,6 +10,7 @@ import GLKit
 import SwiftUI
 import AudioToolbox
 
+let playerScoreLabel = UILabel()
 let dateLabelTest = UILabel()
 let foodLeftText = UILabel()
 let foodRefillButton = UIButton()
@@ -46,7 +47,9 @@ class ViewController: GLKViewController {
     }
     
     public func createAnimals() {
-        glesRenderer.loadAnimal(Int32.random(in: 1..<5))
+        let rand = Int.random(in: 1..<5)
+        glesRenderer.loadAnimal(Int32(rand))
+        ScoreHandler.setScore(numAnim: rand)
     }
     
     override func viewDidLoad() {
@@ -55,9 +58,15 @@ class ViewController: GLKViewController {
         // Do any additional setup after loading the view.
         refreshData.lastOpened = Int(Date().timeIntervalSinceReferenceDate)
         
+        // Animal Coins Label
         dateLabelTest.frame = CGRect(x: 25, y: 0, width: 300, height: 100)
         dateLabelTest.textColor = UIColor.black
         self.view.addSubview(dateLabelTest)
+        
+        // Score Label
+        playerScoreLabel.frame = CGRect(x: 280, y: 0, width: 300, height: 100)
+        playerScoreLabel.textColor = UIColor.black
+        self.view.addSubview(playerScoreLabel)
         
         foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-60, width: 300, height: 50)
         foodLeftText.textColor = UIColor.black
@@ -81,6 +90,7 @@ class ViewController: GLKViewController {
         if UserDefaults.standard.object(forKey: "firstLaunch") == nil {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
             UserDefaults.standard.set(false, forKey: "firstLaunch")
+            UserDefaults.standard.set(0, forKey: DefaultKeys.score)
         }
 
         MusicPlayer.Instance.startBgMusic()
@@ -106,4 +116,5 @@ struct refreshData {
 struct DefaultKeys {
     static let currency = "currency"
     static let food = "food"
+    static let score = "score"
 }
