@@ -29,14 +29,15 @@ class MusicPlayer {
         }
     }
     
-    func playSfx(sfx: String) {
-        if let bundle = Bundle.main.path(forResource: sfx, ofType: "mp3") {
+    func playSfx(sfx: String, ext: String) {
+        if let bundle = Bundle.main.path(forResource: sfx, ofType: ext) {
             let sfxUrl = NSURL(fileURLWithPath: bundle)
             
             do {
                 audioPlayer = try AVAudioPlayer(contentsOf: sfxUrl as URL)
                 guard let audioPlayer = audioPlayer else { return }
-                audioPlayer.play() // Play sfx without looping
+                audioPlayer.numberOfLoops = 1 // Play sfx without looping
+                audioPlayer.play()
             } catch {
                 print(error)
             }

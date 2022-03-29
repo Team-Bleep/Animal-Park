@@ -25,6 +25,7 @@
 		D8F0C21727C11FFF002BA60B /* Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D8F0C21627C11FFF002BA60B /* Renderer.mm */; };
 		EC03822027F1311100475DB3 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC03821F27F1311100475DB3 /* MusicPlayer.swift */; };
 		ECAB503127F2861F00A8C3E7 /* haru-ni-yosete.wav in Resources */ = {isa = PBXBuildFile; fileRef = ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */; };
+		ECAB503327F28A3F00A8C3E7 /* musical-beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		D8F0C21827C12046002BA60B /* Renderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Renderer.h; sourceTree = "<group>"; };
 		EC03821F27F1311100475DB3 /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
 		ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "haru-ni-yosete.wav"; sourceTree = "<group>"; };
+		ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "musical-beep.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +146,7 @@
 		EC03822127F1370600475DB3 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */,
 				ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */,
 			);
 			path = Audio;
@@ -211,6 +214,7 @@
 				D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */,
 				D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */,
 				ECAB503127F2861F00A8C3E7 /* haru-ni-yosete.wav in Resources */,
+				ECAB503327F28A3F00A8C3E7 /* musical-beep.wav in Resources */,
 				D82C378E27AE4B5F00256AD9 /* LaunchScreen.storyboard in Resources */,
 				D82C378B27AE4B5F00256AD9 /* Assets.xcassets in Resources */,
 				D82C378927AE4B5D00256AD9 /* Main.storyboard in Resources */,
