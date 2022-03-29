@@ -5,7 +5,6 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Animal Paws.ttf</string>
-		<string>Animal Paws.otf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

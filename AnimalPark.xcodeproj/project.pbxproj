@@ -12,10 +12,7 @@
 		7944D33A27C61CC200CA1A56 /* Animal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33927C61CC200CA1A56 /* Animal.swift */; };
 		7944D33C27C6395500CA1A56 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33B27C6395500CA1A56 /* Store.swift */; };
 		7944D33E27C644B300CA1A56 /* Toy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33D27C644B300CA1A56 /* Toy.swift */; };
-		79AEC36B27F3BEA300114AD3 /* Animal Paws.woff in Resources */ = {isa = PBXBuildFile; fileRef = 79AEC36727F3BEA300114AD3 /* Animal Paws.woff */; };
-		79AEC36C27F3BEA300114AD3 /* Animal Paws.woff2 in Resources */ = {isa = PBXBuildFile; fileRef = 79AEC36827F3BEA300114AD3 /* Animal Paws.woff2 */; };
 		79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */; };
-		79AEC36E27F3BEA300114AD3 /* Animal Paws.otf in Resources */ = {isa = PBXBuildFile; fileRef = 79AEC36A27F3BEA300114AD3 /* Animal Paws.otf */; };
 		D5A32B3727EFE00500BD0221 /* FoodHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A32B3627EFE00500BD0221 /* FoodHandler.swift */; };
 		D5DAEE9227C1F79900631DF9 /* CurrencyHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */; };
 		D82C378227AE4B5D00256AD9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82C378127AE4B5D00256AD9 /* AppDelegate.swift */; };
@@ -40,10 +37,7 @@
 		7944D33927C61CC200CA1A56 /* Animal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animal.swift; sourceTree = "<group>"; };
 		7944D33B27C6395500CA1A56 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		7944D33D27C644B300CA1A56 /* Toy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toy.swift; sourceTree = "<group>"; };
-		79AEC36727F3BEA300114AD3 /* Animal Paws.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Animal Paws.woff"; sourceTree = "<group>"; };
-		79AEC36827F3BEA300114AD3 /* Animal Paws.woff2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Animal Paws.woff2"; sourceTree = "<group>"; };
 		79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Animal Paws.ttf"; sourceTree = "<group>"; };
-		79AEC36A27F3BEA300114AD3 /* Animal Paws.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Animal Paws.otf"; sourceTree = "<group>"; };
 		D5A32B3627EFE00500BD0221 /* FoodHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHandler.swift; sourceTree = "<group>"; };
 		D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyHandler.swift; sourceTree = "<group>"; };
 		D82C377E27AE4B5D00256AD9 /* AnimalPark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimalPark.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,10 +93,7 @@
 		79AEC36627F3BEA300114AD3 /* animal-paws */ = {
 			isa = PBXGroup;
 			children = (
-				79AEC36727F3BEA300114AD3 /* Animal Paws.woff */,
-				79AEC36827F3BEA300114AD3 /* Animal Paws.woff2 */,
 				79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */,
-				79AEC36A27F3BEA300114AD3 /* Animal Paws.otf */,
 			);
 			path = "animal-paws";
 			sourceTree = "<group>";
@@ -246,17 +237,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */,
-				79AEC36C27F3BEA300114AD3 /* Animal Paws.woff2 in Resources */,
 				558D2AAE27F2E81D0003DC2B /* crate.jpg in Resources */,
 				D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */,
 				D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */,
 				ECAB503127F2861F00A8C3E7 /* haru-ni-yosete.wav in Resources */,
 				558D2AAF27F2E81D0003DC2B /* map.jpg in Resources */,
-				79AEC36B27F3BEA300114AD3 /* Animal Paws.woff in Resources */,
 				ECAB503327F28A3F00A8C3E7 /* musical-beep.wav in Resources */,
 				D82C378E27AE4B5F00256AD9 /* LaunchScreen.storyboard in Resources */,
 				D82C378B27AE4B5F00256AD9 /* Assets.xcassets in Resources */,
-				79AEC36E27F3BEA300114AD3 /* Animal Paws.otf in Resources */,
 				D82C378927AE4B5D00256AD9 /* Main.storyboard in Resources */,
 				D85876D927C1904D001E0FF6 /* parkbg.png in Resources */,
 			);
