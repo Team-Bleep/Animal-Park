@@ -65,8 +65,8 @@ enum
 
     // OpenGL IDs
     GLuint programObject;
-    GLuint crateTexture;
-    GLuint mapTexture;
+    GLuint backgroundTexture;
+    NSString* animalTextures[4]; // PLS UPDATE ARRAY SIZE WITH OBJECTS ARRAY
 
     // global lighting parameters
     GLKVector4 specularLightPosition;
@@ -75,11 +75,10 @@ enum
     GLKVector4 ambientComponent;
     
     // render objects
-    RenderObject objects[4];
+    RenderObject objects[4]; // PLS UPDATE ARRAY SIZE WITH ANIMAL TEXTURES ARRAY
     RenderObject backdrop;
     
     int animalCount;
-
     // moving camera automatically
     float dist, distIncr;
 }
@@ -135,41 +134,46 @@ enum
 - (void)loadAnimal:(int)animalCountx
 {
     animalCount = animalCountx;
-    // -------------- Load maze objects
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+        // TODO asign animal textures
+        if (rand() % 2 == 0){
+            animalTextures[i] = @"crate.jpg";
+        } else {
+            animalTextures[i] = @"map.jpg";
+        }
             
-            // cube (centre, textured)
-            glGenVertexArrays(1, &objects[i].vao);
-            glGenBuffers(1, &objects[i].ibo);
+        // cube (centre, textured)
+        glGenVertexArrays(1, &objects[i].vao);
+        glGenBuffers(1, &objects[i].ibo);
 
-            // get cube data
-            objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
+        // get cube data
+        objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
-            // set up VBOs (one per attribute)
-            glBindVertexArray(objects[i].vao);
-            GLuint vbo[3];
-            glGenBuffers(3, vbo);
+        // set up VBOs (one per attribute)
+        glBindVertexArray(objects[i].vao);
+        GLuint vbo[3];
+        glGenBuffers(3, vbo);
 
-            // pass on position data
-            glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-            glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), objects[i].vertices, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(ATTRIB_POSITION);
-            glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+        // pass on position data
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), objects[i].vertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_POSITION);
+        glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-            // pass on normals
-            glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-            glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), objects[i].normals, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(ATTRIB_NORMAL);
-            glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+        // pass on normals
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), objects[i].normals, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_NORMAL);
+        glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-            // pass on texture coordinates
-            glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-            glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), objects[i].texCoords, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(ATTRIB_TEXTURE);
-            glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
+        // pass on texture coordinates
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+        glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), objects[i].texCoords, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_TEXTURE);
+        glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objects[i].ibo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(objects[i].indices[0]) * objects[i].numIndices, objects[i].indices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objects[i].ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(objects[i].indices[0]) * objects[i].numIndices, objects[i].indices, GL_STATIC_DRAW);
         
         objects[i].animalSpawnPosX = arc4random_uniform(3) + 1;
         objects[i].animalSpawnPosY = (arc4random_uniform(15) - 1.5)/10;
@@ -263,7 +267,7 @@ enum
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
     
-    crateTexture = [self setupTexture:@"parkbg.png"];
+    backgroundTexture = [self setupTexture:@"parkbg.png"];
     glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
     glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, backdrop.diffuseLightPosition.v);
     glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, backdrop.diffuseComponent.v);
@@ -275,8 +279,14 @@ enum
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
     glDrawElements(GL_TRIANGLES, (GLsizei)backdrop.numIndices, GL_UNSIGNED_INT, 0);
 
-    crateTexture = [self setupTexture:@"crate.jpg"];
+    //crateTexture = [self setupTexture:@"crate.jpg"];
+
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+        // TODO set up animal textures
+        if(animalTextures[i] != NULL){
+            backgroundTexture = [self setupTexture:animalTextures[i]];
+        }
+        
         glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
         glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, objects[i].diffuseLightPosition.v);
         glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, objects[i].diffuseComponent.v);
