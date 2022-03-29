@@ -8,6 +8,7 @@
 import UIKit
 import GLKit
 import SwiftUI
+import AudioToolbox
 
 let dateLabelTest = UILabel()
 let foodLeftText = UILabel()
@@ -85,7 +86,8 @@ class ViewController: GLKViewController {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
             UserDefaults.standard.set(false, forKey: "firstLaunch")
         }
-       
+        print("calling music player")
+        MusicPlayer.Instance.startBgMusic()
     }
     
     @objc func refillFoodClicked(sender:UIButton!) {

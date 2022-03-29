@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D5A32B3727EFE00500BD0221 /* FoodHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A32B3627EFE00500BD0221 /* FoodHandler.swift */; };
 		7944D33A27C61CC200CA1A56 /* Animal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33927C61CC200CA1A56 /* Animal.swift */; };
 		7944D33C27C6395500CA1A56 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33B27C6395500CA1A56 /* Store.swift */; };
 		7944D33E27C644B300CA1A56 /* Toy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33D27C644B300CA1A56 /* Toy.swift */; };
+		D5A32B3727EFE00500BD0221 /* FoodHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A32B3627EFE00500BD0221 /* FoodHandler.swift */; };
 		D5DAEE9227C1F79900631DF9 /* CurrencyHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */; };
 		D82C378227AE4B5D00256AD9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82C378127AE4B5D00256AD9 /* AppDelegate.swift */; };
 		D82C378427AE4B5D00256AD9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82C378327AE4B5D00256AD9 /* SceneDelegate.swift */; };
@@ -23,13 +23,16 @@
 		D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = D8F0C21127C11842002BA60B /* VertexShader.vsh */; };
 		D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = D8F0C21327C11E69002BA60B /* FragmentShader.fsh */; };
 		D8F0C21727C11FFF002BA60B /* Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D8F0C21627C11FFF002BA60B /* Renderer.mm */; };
+		EC03822027F1311100475DB3 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC03821F27F1311100475DB3 /* MusicPlayer.swift */; };
+		ECAB503127F2861F00A8C3E7 /* haru-ni-yosete.wav in Resources */ = {isa = PBXBuildFile; fileRef = ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */; };
+		ECAB503327F28A3F00A8C3E7 /* musical-beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		D5A32B3627EFE00500BD0221 /* FoodHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHandler.swift; sourceTree = "<group>"; };
 		7944D33927C61CC200CA1A56 /* Animal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animal.swift; sourceTree = "<group>"; };
 		7944D33B27C6395500CA1A56 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		7944D33D27C644B300CA1A56 /* Toy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toy.swift; sourceTree = "<group>"; };
+		D5A32B3627EFE00500BD0221 /* FoodHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHandler.swift; sourceTree = "<group>"; };
 		D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyHandler.swift; sourceTree = "<group>"; };
 		D82C377E27AE4B5D00256AD9 /* AnimalPark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimalPark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D82C378127AE4B5D00256AD9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -47,6 +50,9 @@
 		D8F0C21327C11E69002BA60B /* FragmentShader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = FragmentShader.fsh; sourceTree = "<group>"; };
 		D8F0C21627C11FFF002BA60B /* Renderer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Renderer.mm; sourceTree = "<group>"; };
 		D8F0C21827C12046002BA60B /* Renderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Renderer.h; sourceTree = "<group>"; };
+		EC03821F27F1311100475DB3 /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
+		ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "haru-ni-yosete.wav"; sourceTree = "<group>"; };
+		ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "musical-beep.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +79,8 @@
 		D82C377527AE4B5D00256AD9 = {
 			isa = PBXGroup;
 			children = (
+				EC03822127F1370600475DB3 /* Audio */,
+				EC03821F27F1311100475DB3 /* MusicPlayer.swift */,
 				D5A32B3627EFE00500BD0221 /* FoodHandler.swift */,
 				D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */,
 				7944D33827C61CB200CA1A56 /* Data */,
@@ -133,6 +141,15 @@
 				D8F0C21827C12046002BA60B /* Renderer.h */,
 			);
 			path = Renderer;
+			sourceTree = "<group>";
+		};
+		EC03822127F1370600475DB3 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */,
+				ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */,
+			);
+			path = Audio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,6 +213,8 @@
 			files = (
 				D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */,
 				D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */,
+				ECAB503127F2861F00A8C3E7 /* haru-ni-yosete.wav in Resources */,
+				ECAB503327F28A3F00A8C3E7 /* musical-beep.wav in Resources */,
 				D82C378E27AE4B5F00256AD9 /* LaunchScreen.storyboard in Resources */,
 				D82C378B27AE4B5F00256AD9 /* Assets.xcassets in Resources */,
 				D82C378927AE4B5D00256AD9 /* Main.storyboard in Resources */,
@@ -210,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC03822027F1311100475DB3 /* MusicPlayer.swift in Sources */,
 				D82C378627AE4B5D00256AD9 /* ViewController.swift in Sources */,
 				D82C378227AE4B5D00256AD9 /* AppDelegate.swift in Sources */,
 				D82C378427AE4B5D00256AD9 /* SceneDelegate.swift in Sources */,
