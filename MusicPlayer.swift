@@ -14,7 +14,6 @@ class MusicPlayer {
     private var sfxPlayer: AVAudioPlayer?
     
     func startBgMusic() {
-        print("begin startBgMusic")
         if let bundle = Bundle.main.path(forResource: "haru-ni-yosete", ofType: "wav") {
             let bgm = NSURL(fileURLWithPath: bundle)
             
