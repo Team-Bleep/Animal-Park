@@ -1,178 +1,363 @@
 //
-//  Renderer.m
-//  AnimalPark
-//
-//  Created by Mohammed Bajaman on 2022-02-19.
+//  Copyright © 2017 Borna Noureddin. All rights reserved.
 //
 
 #import "Renderer.h"
 #import <Foundation/Foundation.h>
 #import <GLKit/GLKit.h>
+#include <chrono>
 #include "GLESRenderer.hpp"
 
-enum {
+// small struct to hold object-specific information
+struct RenderObject
+{
+    GLuint vao, ibo;    // VAO and index buffer object IDs
+
+    // model-view, model-view-projection and normal matrices
+    GLKMatrix4 mvp, mvm;
+    GLKMatrix3 normalMatrix;
+
+    // diffuse lighting parameters
+    GLKVector4 diffuseLightPosition;
+    GLKVector4 diffuseComponent;
+
+    // vertex data
+    float *vertices, *normals, *texCoords;
+    int *indices, numIndices;
+    
+    float animalSpawnPosX, animalSpawnPosY;
+};
+
+// macro to hep with GL calls
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+// uniform variables for shaders
+enum
+{
     UNIFORM_MODELVIEWPROJECTION_MATRIX,
+    UNIFORM_MODELVIEW_MATRIX,
     UNIFORM_NORMAL_MATRIX,
-    UNIFORM_PASSTHROUGH,
-    UNIFORM_SHADEINFRAG,
     UNIFORM_TEXTURE,
+    UNIFORM_LIGHT_SPECULAR_POSITION,
+    UNIFORM_LIGHT_DIFFUSE_POSITION,
+    UNIFORM_LIGHT_DIFFUSE_COMPONENT,
+    UNIFORM_LIGHT_SHININESS,
+    UNIFORM_LIGHT_SPECULAR_COMPONENT,
+    UNIFORM_LIGHT_AMBIENT_COMPONENT,
+    UNIFORM_USE_TEXTURE,
     NUM_UNIFORMS
 };
 GLint uniforms[NUM_UNIFORMS];
 
-enum{
-    ATTRIB_VERTEX,
+// vertex attributes
+enum
+{
+    ATTRIB_POSITION,
     ATTRIB_NORMAL,
+    ATTRIB_TEXTURE,
     NUM_ATTRIBUTES
 };
 
 @interface Renderer () {
     GLKView *theView;
     GLESRenderer glesRenderer;
+    std::chrono::time_point<std::chrono::steady_clock> lastTime;
+
+    // OpenGL IDs
     GLuint programObject;
+    GLuint backgroundTexture;
+    NSString* animalTextures[4]; // PLS UPDATE ARRAY SIZE WITH OBJECTS ARRAY
+
+    // global lighting parameters
+    GLKVector4 specularLightPosition;
+    GLKVector4 specularComponent;
+    GLfloat shininess;
+    GLKVector4 ambientComponent;
     
-    GLKMatrix4 modelViewProjection;
-    GLKMatrix3 normalMatrix;
-    GLuint backdropTexture;
+    // render objects
+    RenderObject objects[4]; // PLS UPDATE ARRAY SIZE WITH ANIMAL TEXTURES ARRAY
+    RenderObject backdrop;
     
-    float *vertices;
-    float *normals, *texCoords;
-    int *indices, numIndices, animalNumIndices;
+    int animalCount;
+    // moving camera automatically
+    float dist, distIncr;
 }
 
 @end
 
-@implementation Renderer;
+@implementation Renderer
 
-- (void)dealloc {
+- (void)dealloc
+{
     glDeleteProgram(programObject);
 }
 
-- (void) loadBackdrop{
-    numIndices = glesRenderer.GenBackdrop(1.0f, &vertices, &normals, &texCoords, &indices);
+- (void)loadBackdrop
+{
+        // cube (centre, textured)
+        glGenVertexArrays(1, &backdrop.vao);
+        glGenBuffers(1, &backdrop.ibo);
+
+        // get cube data
+       backdrop.numIndices = glesRenderer.GenCube(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
+
+        // set up VBOs (one per attribute)
+        glBindVertexArray(backdrop.vao);
+        GLuint vbo[3];
+        glGenBuffers(3, vbo);
+
+        // pass on position data
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.vertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_POSITION);
+        glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+        // pass on normals
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.normals, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_NORMAL);
+        glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+        // pass on texture coordinates
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+        glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), backdrop.texCoords, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_TEXTURE);
+        glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backdrop.indices[0]) * backdrop.numIndices, backdrop.indices, GL_STATIC_DRAW);
+    
+    // deselect the VAOs just to be clean
+    glBindVertexArray(0);
 }
 
-- (void) loadAnimal{
-    animalNumIndices = glesRenderer.GenAnimal(1.0f, &vertices, &normals, &indices);
+- (void)loadAnimal:(int)animalCountx
+{
+    animalCount = animalCountx;
+    for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+        // TODO asign animal textures
+        if (rand() % 2 == 0){
+            animalTextures[i] = @"crate.jpg";
+        } else {
+            animalTextures[i] = @"map.jpg";
+        }
+            
+        // cube (centre, textured)
+        glGenVertexArrays(1, &objects[i].vao);
+        glGenBuffers(1, &objects[i].ibo);
+
+        // get cube data
+        objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
+
+        // set up VBOs (one per attribute)
+        glBindVertexArray(objects[i].vao);
+        GLuint vbo[3];
+        glGenBuffers(3, vbo);
+
+        // pass on position data
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), objects[i].vertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_POSITION);
+        glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+        // pass on normals
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), objects[i].normals, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_NORMAL);
+        glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+        // pass on texture coordinates
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+        glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), objects[i].texCoords, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ATTRIB_TEXTURE);
+        glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objects[i].ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(objects[i].indices[0]) * objects[i].numIndices, objects[i].indices, GL_STATIC_DRAW);
+        
+        objects[i].animalSpawnPosX = arc4random_uniform(3) + 1;
+        objects[i].animalSpawnPosY = (arc4random_uniform(15) - 1.5)/10;
+    }
+    // deselect the VAOs just to be clean
+    glBindVertexArray(0);
 }
 
-- (void) loadAnimal2{
-    animalNumIndices = glesRenderer.GenAnimal2(1.0f, &vertices, &normals, &indices);
-}
-
-- (void) setup:(GLKView *)view {
+- (void)setup:(GLKView *)view
+{
     view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     
-    if(!view.context) {
+    if (!view.context) {
         NSLog(@"Failed to create ES context");
     }
     
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     theView = view;
     [EAGLContext setCurrentContext:view.context];
-    if(![self setupShaders]){
-        NSLog(@"SHADERS WHERE BRO?");
+    if (![self setupShaders])
         return;
+    
+
+    // set up lighting values
+    specularComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
+    specularLightPosition = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
+    shininess = 200.0f;
+    
+    ambientComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
+    
+    for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+            objects[i].diffuseLightPosition = GLKVector4Make(0.0f, 1.0f, 0.0f, 1.0f);
+            objects[i].diffuseComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
     }
-       
     
-    backdropTexture = [self setupTexture:@"park.png"];
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, backdropTexture);
-    glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
+    backdrop.diffuseLightPosition = GLKVector4Make(0.0f, 2.0f, 2.0f, 1.0f);
+    backdrop.diffuseComponent = GLKVector4Make(0.5375f, 0.8695f, 1.076f, 1.0f);
     
-    
-    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+    // Set background/sky colour
+    glClearColor(0.5764f, 0.74509f, 0.929411f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    lastTime = std::chrono::steady_clock::now();
 }
 
-- (void)update {
-
-    modelViewProjection = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -5);
-    normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewProjection), NULL);
+- (void)update
+{
+    //ambientComponent = GLKVector4Make(0.16f, 0.48f, 0.6f, 1.0f);
     
-    float aspect = (float)theView.drawableWidth /  (float)theView.drawableHeight;
+    // make specular light move with camera
+    specularLightPosition = GLKVector4Make(0.0, 0.0f, -15.0f, 1.0f);
+    
+    GLKVector4 specComponentFlashOff = GLKVector4Make(0.4f, 0.2f, 0.2f, 0.1f);
+    float shininessFlashOff = 200.0;
+    shininess = shininessFlashOff;
+    specularComponent = specComponentFlashOff;
+    
+    // perspective projection matrix
+    float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
     GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
-    modelViewProjection = GLKMatrix4Multiply(perspective, modelViewProjection);
-}
 
-- (void)draw:(CGRect)drawBackdrop; {
-    glUniformMatrix4fv(uniforms [UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)modelViewProjection.m);
-    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, normalMatrix.m);
-    glUniform1i(uniforms[UNIFORM_PASSTHROUGH], false);
-    glUniform1i(uniforms[UNIFORM_SHADEINFRAG], true);
-    glViewport(0, 0, (int)theView.drawableWidth, (int)theView.drawableHeight);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glUseProgram(programObject);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), vertices);
-    glEnableVertexAttribArray(0);
-    glVertexAttrib4f(1, 1.0f, 1.0f, 0.0f, 1.0f);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), normals);
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat),texCoords);
-    glEnableVertexAttribArray(3);
-    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices);
-}
+    // backdrop
+    backdrop.mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -3.0, 0.2, -5.0),4.0,4.0,0.0);
+    backdrop.mvp = GLKMatrix4Rotate(backdrop.mvp, 1.57f, 1.0,0.0,0.0);
+    backdrop.mvm = backdrop.mvp =   GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, 3, -0.5, 0), backdrop.mvp);
+    backdrop.normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(backdrop.mvp), NULL);
+    backdrop.mvp = GLKMatrix4Multiply(perspective, backdrop.mvp);
 
-- (void)drawAnml:(CGRect)drawAnimal; {
-    glUniform1i(uniforms[UNIFORM_SHADEINFRAG], false);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), vertices);
-    glEnableVertexAttribArray(0);
-    glVertexAttrib4f(1, 1.0f, 1.0f, 0.0f, 1.0f);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), normals);
-    glEnableVertexAttribArray(2);
-    glDrawElements(GL_TRIANGLES, animalNumIndices, GL_UNSIGNED_INT, indices);
-}
-
-- (bool)setupShaders{
-    char *vertexShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle]pathForResource:[[NSString stringWithUTF8String:"VertexShader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"VertexShader.vsh"] pathExtension]] cStringUsingEncoding:1]);
-    
-    char *fragmentShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"FragmentShader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"FragmentShader.fsh"] pathExtension]] cStringUsingEncoding:1]);
-    programObject = glesRenderer.LoadProgram(vertexShaderStr, fragmentShaderStr);
-    if(programObject == 0){
-        NSLog(@"PROG OBJ WHERE HOMIE???");
-        return false;
+    for(int i = 0; i < animalCount; i = i+1) {
+        objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0),1.0,1.0,0.1);
+        //objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
+        // xrand: 1 to 3
+        // yrand: -1.5 to 1.5
+        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, objects[i].animalSpawnPosX, objects[i].animalSpawnPosY, 0), objects[i].mvp);
+        objects[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(objects[i].mvp), NULL);
+        objects[i].mvp = GLKMatrix4Multiply(perspective, objects[i].mvp);
     }
-      
+}
+
+- (void)draw:(CGRect)drawRect;
+{
+    // pass on global lighting, fog and texture values
     
+    glUniform4fv(uniforms[UNIFORM_LIGHT_SPECULAR_POSITION], 1, specularLightPosition.v);
+    glUniform1i(uniforms[UNIFORM_LIGHT_SHININESS], shininess);
+    glUniform4fv(uniforms[UNIFORM_LIGHT_SPECULAR_COMPONENT], 1, specularComponent.v);
+    glUniform4fv(uniforms[UNIFORM_LIGHT_AMBIENT_COMPONENT], 1, ambientComponent.v);
+    
+    // set up GL for drawing
+    glViewport(0, 0, (int)theView.drawableWidth, (int)theView.drawableHeight);
+    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glUseProgram ( programObject );
+    
+    backgroundTexture = [self setupTexture:@"parkbg.png"];
+    glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
+    glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, backdrop.diffuseLightPosition.v);
+    glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, backdrop.diffuseComponent.v);
+    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)backdrop.mvp.m);
+    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, FALSE, (const float *)backdrop.mvm.m);
+    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, backdrop.normalMatrix.m);
+    
+    glBindVertexArray(backdrop.vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
+    glDrawElements(GL_TRIANGLES, (GLsizei)backdrop.numIndices, GL_UNSIGNED_INT, 0);
+
+    //crateTexture = [self setupTexture:@"crate.jpg"];
+
+    for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+        // TODO set up animal textures
+        if(animalTextures[i] != NULL){
+            backgroundTexture = [self setupTexture:animalTextures[i]];
+        }
+        
+        glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
+        glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, objects[i].diffuseLightPosition.v);
+        glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, objects[i].diffuseComponent.v);
+        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)objects[i].mvp.m);
+        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, FALSE, (const float *)objects[i].mvm.m);
+        glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, objects[i].normalMatrix.m);
+        
+        glBindVertexArray(objects[i].vao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objects[i].ibo);
+        glDrawElements(GL_TRIANGLES, (GLsizei)objects[i].numIndices, GL_UNSIGNED_INT, 0);
+    }
+}
+
+
+- (bool)setupShaders
+{
+    // Load shaders
+    char *vShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"VertexShader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"VertexShader.vsh"] pathExtension]] cStringUsingEncoding:1]);
+    char *fShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"FragmentShader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"FragmentShader.fsh"] pathExtension]] cStringUsingEncoding:1]);
+    programObject = glesRenderer.LoadProgram(vShaderStr, fShaderStr);
+    if (programObject == 0)
+        return false;
+    
+    // Set up uniform variables
     uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(programObject, "modelViewProjectionMatrix");
+    uniforms[UNIFORM_MODELVIEW_MATRIX] = glGetUniformLocation(programObject, "modelViewMatrix");
     uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(programObject, "normalMatrix");
-    uniforms[UNIFORM_PASSTHROUGH] = glGetUniformLocation(programObject, "passThrough");
-    uniforms[UNIFORM_SHADEINFRAG] = glGetUniformLocation(programObject, "shadeInFrag");
     uniforms[UNIFORM_TEXTURE] = glGetUniformLocation(programObject, "texSampler");
-    
+    uniforms[UNIFORM_LIGHT_SPECULAR_POSITION] = glGetUniformLocation(programObject, "specularLightPosition");
+    uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION] = glGetUniformLocation(programObject, "diffuseLightPosition");
+    uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT] = glGetUniformLocation(programObject, "diffuseComponent");
+    uniforms[UNIFORM_LIGHT_SHININESS] = glGetUniformLocation(programObject, "shininess");
+    uniforms[UNIFORM_LIGHT_SPECULAR_COMPONENT] = glGetUniformLocation(programObject, "specularComponent");
+    uniforms[UNIFORM_LIGHT_AMBIENT_COMPONENT] = glGetUniformLocation(programObject, "ambientComponent");
+    uniforms[UNIFORM_USE_TEXTURE] = glGetUniformLocation(programObject, "useTexture");
     return true;
 }
 
-- (GLuint) setupTexture:(NSString *)fileName {
+
+// Load in and set up texture image (adapted from Ray Wenderlich)
+- (GLuint)setupTexture:(NSString *)fileName
+{
     CGImageRef spriteImage = [UIImage imageNamed:fileName].CGImage;
-    if(!spriteImage) {
+    if (!spriteImage) {
         NSLog(@"Failed to load image %@", fileName);
         exit(1);
     }
     
-    int width = (int)CGImageGetWidth(spriteImage);
-    int height = (int)CGImageGetHeight(spriteImage);
-    NSLog(@"Image Height: %d", height);
-    NSLog(@"Image Width: %d", width);
+    size_t width = CGImageGetWidth(spriteImage);
+    size_t height = CGImageGetHeight(spriteImage);
     
     GLubyte *spriteData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
     
-    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width * 4, CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
+    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width*4, CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
     
     CGContextDrawImage(spriteContext, CGRectMake(0, 0, width, height), spriteImage);
     
     CGContextRelease(spriteContext);
     
     GLuint texName;
-    glGenTextures(1, &texName);
+    glGenTextures(2, &texName);
     glBindTexture(GL_TEXTURE_2D, texName);
+    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
+    
     free(spriteData);
     return texName;
 }
-    
 
 @end
+
+

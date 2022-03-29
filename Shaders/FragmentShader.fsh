@@ -1,27 +1,50 @@
 #version 300 es
 
 precision highp float;
-in vec4 v_color;
-in vec3 v_normal;
-in vec2 v_texcoord;
+
+// interpolated values from vertex shader
+in vec3 eyeNormal;
+in vec4 eyePos;
+in vec2 texCoordOut;
+
+// output of fragment shader
 out vec4 o_fragColor;
 
-uniform sampler2D texSampler;
-uniform mat3 normalMatrix;
-uniform bool passThrough;
-uniform bool shadeInFrag;
+uniform sampler2D texSampler;   // set up a uniform sampler2D to get texture
+uniform sampler2D texSampler2;
+
+// uniforms for lighting parameters
+uniform vec4 specularLightPosition;
+uniform vec4 diffuseLightPosition;
+uniform vec4 diffuseComponent;
+uniform float shininess;
+uniform vec4 specularComponent;
+uniform vec4 ambientComponent;
+uniform bool useTexture;
 
 void main(){
-    if(!passThrough && shadeInFrag) {
-        vec3 eyeNormal = normalize(normalMatrix * v_normal);
-        vec3 lightPosition = vec3(0.0, 1.0, 1.0);
-        vec4 diffuseColor = vec4(0.0, 1.0, 0.0, 1.0);
+    // ambient lighting calculation
+    vec4 ambient = ambientComponent;
 
-        float nDotVP = max(0.0, dot(eyeNormal, normalize(lightPosition)));
-
-        o_fragColor = diffuseColor * nDotVP * texture(texSampler, v_texcoord);
-    } else {
-        o_fragColor = v_color;
+    // diffuse lighting calculation
+    vec3 N = normalize(eyeNormal);
+    float nDotVP = max(0.0, dot(N, normalize(diffuseLightPosition.xyz)));
+    vec4 diffuse = diffuseComponent * nDotVP;
+    
+    // specular lighting calculation
+    vec3 E = normalize(-eyePos.xyz);
+    vec3 L = normalize(specularLightPosition.xyz - eyePos.xyz);
+    vec3 H = normalize(L+E);
+    float Ks = pow(max(dot(N, H), 0.0), shininess);
+    vec4 specular = Ks*specularComponent;
+    if( dot(L, N) < 0.0 ) {
+        // if the dot product is negative, this is a fragment on the other side of the object and hence not affected by the specular light
+        specular = vec4(0.0, 0.0, 0.0, 1.0);
     }
-    //gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+
+    // Regular textured simplified Phong
+    //o_fragColor = ambient + diffuse + specular;
+    o_fragColor = ambient;
+    if (useTexture)
+        o_fragColor = o_fragColor * texture(texSampler, texCoordOut);
 }
