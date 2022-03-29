@@ -13,7 +13,8 @@ class MusicPlayer {
     var audioPlayer: AVAudioPlayer?
     
     func startBgMusic() {
-        if let bundle = Bundle.main.path(forResource: "/Audio/haru-ni-yosete", ofType: "mp3") {
+        print("begin startBgMusic")
+        if let bundle = Bundle.main.path(forResource: "haru-ni-yosete", ofType: "wav") {
             let bgm = NSURL(fileURLWithPath: bundle)
             
             do {
