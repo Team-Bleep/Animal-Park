@@ -10,6 +10,7 @@ import GLKit
 import SwiftUI
 import AudioToolbox
 
+let playerScoreLabel = UILabel()
 let dateLabelTest = UILabel()
 let foodLeftText = UILabel()
 let foodRefillButton = UIButton()
@@ -45,8 +46,9 @@ class ViewController: GLKViewController {
         }
     }
     
-    public func createAnimals() {
-        glesRenderer.loadAnimal(Int32.random(in: 1..<5))
+    public func createAnimals(numAnim: Int) {
+        glesRenderer.loadAnimal(Int32(numAnim))
+        ScoreHandler.setScore(numAnim: numAnim)
     }
     
     override func viewDidLoad() {
@@ -65,17 +67,24 @@ class ViewController: GLKViewController {
         // Do any additional setup after loading the view.
         refreshData.lastOpened = Int(Date().timeIntervalSinceReferenceDate)
         
+        // Animal Coins Label
         dateLabelTest.frame = CGRect(x: 25, y: 0, width: 300, height: 100)
         dateLabelTest.textColor = UIColor.black
         dateLabelTest.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(30)
         self.view.addSubview(dateLabelTest)
         
-        foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-60, width: 300, height: 50)
+        // Score Label
+        playerScoreLabel.frame = CGRect(x: 280, y: 0, width: 300, height: 100)
+        playerScoreLabel.textColor = UIColor.black
+        playerScoreLabel.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(20)
+        self.view.addSubview(playerScoreLabel)
+        
+        foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-80, width: 300, height: 50)
         foodLeftText.textColor = UIColor.black
         foodLeftText.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(20)
         self.view.addSubview(foodLeftText)
         
-        foodCostText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-25, width: 300, height: 20)
+        foodCostText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-45, width: 300, height: 20)
         foodCostText.textColor = UIColor.black
         foodCostText.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(16)
         foodCostText.text = "Refill Cost: " + String(FoodHandler.FoodCost) + " Animal Coins";
@@ -86,7 +95,7 @@ class ViewController: GLKViewController {
         foodRefillButton.layer.borderWidth = 2;
         foodRefillButton.setTitle("Refill Food", for: .normal);
         foodRefillButton.titleLabel?.font = animalPawsFont.withSize(24);
-        foodRefillButton.frame = CGRect(x: UIScreen.main.bounds.width - 135, y: UIScreen.main.bounds.height-55, width: 130, height:50);
+        foodRefillButton.frame = CGRect(x: UIScreen.main.bounds.width - 135, y: UIScreen.main.bounds.height-70, width: 130, height:50);
         foodRefillButton.addTarget(self, action: #selector(refillFoodClicked(sender:)), for: .touchUpInside);
         self.view.addSubview(foodRefillButton);
         
@@ -94,6 +103,7 @@ class ViewController: GLKViewController {
         if UserDefaults.standard.object(forKey: "firstLaunch") == nil {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
             UserDefaults.standard.set(false, forKey: "firstLaunch")
+            UserDefaults.standard.set(0, forKey: DefaultKeys.score)
         }
 
         MusicPlayer.Instance.startBgMusic()
@@ -125,4 +135,5 @@ struct refreshData {
 struct DefaultKeys {
     static let currency = "currency"
     static let food = "food"
+    static let score = "score"
 }

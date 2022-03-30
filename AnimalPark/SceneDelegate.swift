@@ -37,8 +37,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
         foodLeftText.text = FoodHandler.getFood().description + "% Food Remaining"
-        decreaseFood()
         spawnAnimals()
+        decreaseFood()
+        playerScoreLabel.text = ScoreHandler.getScore().description + " Points"
     }
     
     func decreaseFood() {
@@ -53,19 +54,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         
-        for _ in 0...Int(refreshData.elapsedTime/spawnTime) {
-            if (Int.random(in: 0..<2)) == 0 {
-                // spawn animal
-                //ViewController.createAnimals()
-                //ViewController.createAnimals()
-                if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
-                    current.createAnimals()
-                    MusicPlayer.Instance.playSfx(sfx: "musical-beep", ext: "wav")
-                }
+        
+        if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
+            if (FoodHandler.getFood() <= 0) {
+                return
             }
+            current.createAnimals(numAnim: Int(refreshData.elapsedTime/spawnTime))
+            MusicPlayer.Instance.playSfx(sfx: "musical-beep", ext: "wav")
         }
-        
-        
     }
 
     func calculateElapsedTime() {

@@ -6,7 +6,7 @@
 //
 
 struct  FoodHandler {
-    static let FoodCost = 5;
+    static let FoodCost = 2;
     static let MaxFood = 100;
     
     static func fillFood() {
