@@ -264,9 +264,7 @@ enum
     // add random selection of direction to move each cube (4 values, one per cube)
     // - Up (y), down (-y), left (-x), right (x)
     // check for bounds (edges of walls -- don't add if value is more than specified edges)
- 
-    
-    
+
     for(int i = 0; i < animalCount; i = i+1) {
         int rand = arc4random_uniform(4);
         switch(rand) {
@@ -282,16 +280,8 @@ enum
             case 3:
                 distx = distx - distIncr;
         }
-        NSLog(@"%d", rand);
-        
         objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, distx, disty, 0);
     }
-    // objects[0].mvp = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, dist, 0.0);
-
-    
-    // move each cube by specified amount per direction
-    // - translation matrix?
-    
 }
 
 - (void)draw:(CGRect)drawRect;
