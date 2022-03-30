@@ -18,6 +18,7 @@
 - (void)loadAnimal:(int)animalCount;
 - (void)update;
 - (void)draw:(CGRect)drawBackdrop;
+- (void)despawnAnimals;
 
 @end
 

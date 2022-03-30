@@ -77,6 +77,7 @@ enum
     
     // render objects
     RenderObject objects[4]; // PLS UPDATE ARRAY SIZE WITH ANIMAL TEXTURES ARRAY
+    RenderObject nullObjects[4]; // PLS UPDATE SIZE WITH OBJECTS ARRAY
     RenderObject backdrop;
     
     int animalCount;
@@ -132,11 +133,18 @@ enum
     glBindVertexArray(0);
 }
 
+- (void)despawnAnimals {
+    for (int i = 0; i < sizeof(objects)/sizeof(objects[0]); i++){
+        objects[i] = nullObjects[i];
+    }
+}
+
 - (void)loadAnimal:(int)animalCountx
 {
     distx = 0;
     disty = 0;
     animalCount = animalCountx;
+    
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
         // TODO asign animal textures
         if (rand() % 2 == 0){
@@ -144,7 +152,7 @@ enum
         } else {
             animalTextures[i] = @"badger.png";
         }
-            
+        
         // cube (centre, textured)
         glGenVertexArrays(1, &objects[i].vao);
         glGenBuffers(1, &objects[i].ibo);

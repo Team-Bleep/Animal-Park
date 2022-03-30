@@ -51,6 +51,11 @@ class ViewController: GLKViewController {
         ScoreHandler.setScore(numAnim: numAnim)
     }
     
+    public func despawnAnimals(){
+        glesRenderer.despawnAnimals();
+        print("hello there");
+    }
+    
     override func viewDidLoad() {
         
         // add the new font from the font folder that was loaded into info.plist
