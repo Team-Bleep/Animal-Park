@@ -50,15 +50,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func spawnAnimals() {
         let spawnTime = 3 // time it takes for animal to spawn
         // despawn current animals depending on elapsed time
-        if (refreshData.elapsedTime <= spawnTime) {
-            return
-        }
-        
         
         if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
+            current.despawnAnimals();
+            
+            if (refreshData.elapsedTime <= spawnTime) {
+                return
+            }
+            
             if (FoodHandler.getFood() <= 0) {
                 return
             }
+            
             current.createAnimals(numAnim: Int(refreshData.elapsedTime/spawnTime))
             MusicPlayer.Instance.playSfx(sfx: "musical-beep", ext: "wav")
         }
