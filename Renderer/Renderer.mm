@@ -15,6 +15,8 @@ struct RenderObject
     GLuint vao, ibo;    // VAO and index buffer object IDs
     GLuint animalTexture;
     
+    int animalTextureIndex = -1;
+    
     // model-view, model-view-projection and normal matrices
     GLKMatrix4 mvp, mvm;
     GLKMatrix3 normalMatrix;
@@ -174,12 +176,12 @@ enum
                 //animalTextures[i] = @"durgon.png";
                 objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
                 glActiveTexture(GL_TEXTURE1);
-                NSLog(@"HELP");
+                objects[i].animalTextureIndex = 1;
             } else {
                 //animalTextures[i] = @"badger.png";
-                objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
+                objects[i].animalTexture = [self setupTexture:(@"badger.png")];
                 glActiveTexture(GL_TEXTURE2);
-                
+                objects[i].animalTextureIndex = 2;
             }
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
@@ -278,8 +280,10 @@ enum
     
     // perspective projection matrix
     float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
-    GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
-
+    //GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
+    
+    GLKMatrix4 perspective = GLKMatrix4MakeOrtho(-1.5f,1.5f, -3, 3,1,10);
+    
     // backdrop
     backdrop.mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -3.0, 0.2, -5.0),4.0,4.0,0.0);
     backdrop.mvp = GLKMatrix4Rotate(backdrop.mvp, 1.57f, 1.0,0.0,0.0);
@@ -288,7 +292,7 @@ enum
     backdrop.mvp = GLKMatrix4Multiply(perspective, backdrop.mvp);
 
     for(int i = 0; i < animalCount; i = i+1) {
-        objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0),1.0,1.0,0.1);
+        objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0),1.0,1.0,0.000001);
         //objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
         // xrand: 1 to 3
         // yrand: -1.5 to 1.5
@@ -351,12 +355,28 @@ enum
     glDrawElements(GL_TRIANGLES, (GLsizei)backdrop.numIndices, GL_UNSIGNED_INT, 0);
 
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
-        glUniform1i(uniforms[UNIFORM_TEXTURE], 1);
-    
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
-        glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
+        
+        switch (objects[i].animalTextureIndex) {
+            case 1:
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 1);
+                break;
+                
+            case 2:
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 2);
+                break;
+                
+            default:
+                break;
+        }
+        
+        
         glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, objects[i].diffuseLightPosition.v);
         glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, objects[i].diffuseComponent.v);
         glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)objects[i].mvp.m);
