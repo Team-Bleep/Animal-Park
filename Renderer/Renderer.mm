@@ -256,8 +256,8 @@ enum
     
     // Set background/sky colour
     glClearColor(0.5764f, 0.74509f, 0.929411f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
     lastTime = std::chrono::steady_clock::now();
     
     distx = 0.0;
