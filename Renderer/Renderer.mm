@@ -292,7 +292,7 @@ enum
     backdrop.mvp = GLKMatrix4Multiply(perspective, backdrop.mvp);
 
     for(int i = 0; i < animalCount; i = i+1) {
-        objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0),1.0,1.0,0.000001);
+        objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0 - i/10),1.0,1.0,0.000001);
         //objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
         // xrand: 1 to 3
         // yrand: -1.5 to 1.5
