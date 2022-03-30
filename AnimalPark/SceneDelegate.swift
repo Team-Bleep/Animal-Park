@@ -54,15 +54,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         
-        for _ in 0...Int(refreshData.elapsedTime/spawnTime) {
-            if (Int.random(in: 0..<2)) == 0 {
-                // spawn animal
-
-                if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
-                    current.createAnimals()
-                    MusicPlayer.Instance.playSfx(sfx: "musical-beep", ext: "wav")
-                }
-            }
+        
+        if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
+            current.createAnimals(numAnim: Int(refreshData.elapsedTime/spawnTime))
+            MusicPlayer.Instance.playSfx(sfx: "musical-beep", ext: "wav")
         }
     }
 

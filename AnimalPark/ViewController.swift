@@ -46,10 +46,9 @@ class ViewController: GLKViewController {
         }
     }
     
-    public func createAnimals() {
-        let rand = Int.random(in: 1..<5)
-        glesRenderer.loadAnimal(Int32(rand))
-        ScoreHandler.setScore(numAnim: rand)
+    public func createAnimals(numAnim: Int) {
+        glesRenderer.loadAnimal(Int32(numAnim))
+        ScoreHandler.setScore(numAnim: numAnim)
     }
     
     override func viewDidLoad() {
@@ -77,14 +76,15 @@ class ViewController: GLKViewController {
         // Score Label
         playerScoreLabel.frame = CGRect(x: 280, y: 0, width: 300, height: 100)
         playerScoreLabel.textColor = UIColor.black
+        playerScoreLabel.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(20)
         self.view.addSubview(playerScoreLabel)
         
-        foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-60, width: 300, height: 50)
+        foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-80, width: 300, height: 50)
         foodLeftText.textColor = UIColor.black
         foodLeftText.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(20)
         self.view.addSubview(foodLeftText)
         
-        foodCostText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-25, width: 300, height: 20)
+        foodCostText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-45, width: 300, height: 20)
         foodCostText.textColor = UIColor.black
         foodCostText.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(16)
         foodCostText.text = "Refill Cost: " + String(FoodHandler.FoodCost) + " Animal Coins";
@@ -95,7 +95,7 @@ class ViewController: GLKViewController {
         foodRefillButton.layer.borderWidth = 2;
         foodRefillButton.setTitle("Refill Food", for: .normal);
         foodRefillButton.titleLabel?.font = animalPawsFont.withSize(24);
-        foodRefillButton.frame = CGRect(x: UIScreen.main.bounds.width - 135, y: UIScreen.main.bounds.height-55, width: 130, height:50);
+        foodRefillButton.frame = CGRect(x: UIScreen.main.bounds.width - 135, y: UIScreen.main.bounds.height-70, width: 130, height:50);
         foodRefillButton.addTarget(self, action: #selector(refillFoodClicked(sender:)), for: .touchUpInside);
         self.view.addSubview(foodRefillButton);
         
