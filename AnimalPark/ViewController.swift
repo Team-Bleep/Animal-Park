@@ -50,6 +50,16 @@ class ViewController: GLKViewController {
     }
     
     override func viewDidLoad() {
+        
+        // add the new font from the font folder that was loaded into info.plist
+        guard let animalPawsFont = UIFont(name: "AnimalPaws", size: UIFont.labelFontSize) else {
+            fatalError("""
+                Failed to load the "AnimalPaws" font.
+                Make sure the font file is included in the project and the font name
+                is spelled correctly.
+            """)
+        }
+        
         super.viewDidLoad()
         setupGL()
         // Do any additional setup after loading the view.
@@ -57,15 +67,17 @@ class ViewController: GLKViewController {
         
         dateLabelTest.frame = CGRect(x: 25, y: 0, width: 300, height: 100)
         dateLabelTest.textColor = UIColor.black
+        dateLabelTest.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(30)
         self.view.addSubview(dateLabelTest)
         
         foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-60, width: 300, height: 50)
         foodLeftText.textColor = UIColor.black
+        foodLeftText.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(20)
         self.view.addSubview(foodLeftText)
         
         foodCostText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-25, width: 300, height: 20)
         foodCostText.textColor = UIColor.black
-        foodCostText.font = foodCostText.font.withSize(14)
+        foodCostText.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(16)
         foodCostText.text = "Refill Cost: " + String(FoodHandler.FoodCost) + " Animal Coins";
         self.view.addSubview(foodCostText)
         
@@ -73,6 +85,7 @@ class ViewController: GLKViewController {
         foodRefillButton.layer.borderColor = UIColor.black.cgColor;
         foodRefillButton.layer.borderWidth = 2;
         foodRefillButton.setTitle("Refill Food", for: .normal);
+        foodRefillButton.titleLabel?.font = animalPawsFont.withSize(24);
         foodRefillButton.frame = CGRect(x: UIScreen.main.bounds.width - 135, y: UIScreen.main.bounds.height-55, width: 130, height:50);
         foodRefillButton.addTarget(self, action: #selector(refillFoodClicked(sender:)), for: .touchUpInside);
         self.view.addSubview(foodRefillButton);
@@ -84,6 +97,12 @@ class ViewController: GLKViewController {
         }
 
         MusicPlayer.Instance.startBgMusic()
+        
+        /// to print all possible font names and find fontname specified for font
+        //for family in UIFont.familyNames.sorted() {
+        //    let names = UIFont.fontNames(forFamilyName: family)
+        //    print("Family: \(family) Font names: \(names)")
+        //}
     }
     
     @objc func refillFoodClicked(sender:UIButton!) {

@@ -12,6 +12,7 @@
 		7944D33A27C61CC200CA1A56 /* Animal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33927C61CC200CA1A56 /* Animal.swift */; };
 		7944D33C27C6395500CA1A56 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33B27C6395500CA1A56 /* Store.swift */; };
 		7944D33E27C644B300CA1A56 /* Toy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33D27C644B300CA1A56 /* Toy.swift */; };
+		79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */; };
 		D5A32B3727EFE00500BD0221 /* FoodHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A32B3627EFE00500BD0221 /* FoodHandler.swift */; };
 		D5DAEE9227C1F79900631DF9 /* CurrencyHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */; };
 		D82C378227AE4B5D00256AD9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82C378127AE4B5D00256AD9 /* AppDelegate.swift */; };
@@ -36,6 +37,7 @@
 		7944D33927C61CC200CA1A56 /* Animal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animal.swift; sourceTree = "<group>"; };
 		7944D33B27C6395500CA1A56 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		7944D33D27C644B300CA1A56 /* Toy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toy.swift; sourceTree = "<group>"; };
+		79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Animal Paws.ttf"; sourceTree = "<group>"; };
 		D5A32B3627EFE00500BD0221 /* FoodHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHandler.swift; sourceTree = "<group>"; };
 		D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyHandler.swift; sourceTree = "<group>"; };
 		D82C377E27AE4B5D00256AD9 /* AnimalPark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimalPark.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,6 +82,22 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		79AEC36527F3BEA300114AD3 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				79AEC36627F3BEA300114AD3 /* animal-paws */,
+			);
+			path = Fonts;
+			sourceTree = SOURCE_ROOT;
+		};
+		79AEC36627F3BEA300114AD3 /* animal-paws */ = {
+			isa = PBXGroup;
+			children = (
+				79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */,
+			);
+			path = "animal-paws";
+			sourceTree = "<group>";
+		};
 		D82C377527AE4B5D00256AD9 = {
 			isa = PBXGroup;
 			children = (
@@ -91,6 +109,7 @@
 				D85876D727C1904D001E0FF6 /* Textures */,
 				D8F0C21527C11FBC002BA60B /* Renderer */,
 				D8F0C21027C11657002BA60B /* Shaders */,
+				79AEC36527F3BEA300114AD3 /* Fonts */,
 				D82C378027AE4B5D00256AD9 /* AnimalPark */,
 				D82C377F27AE4B5D00256AD9 /* Products */,
 			);
@@ -217,6 +236,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */,
 				558D2AAE27F2E81D0003DC2B /* crate.jpg in Resources */,
 				D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */,
 				D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */,
