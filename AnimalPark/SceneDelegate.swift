@@ -37,8 +37,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
         foodLeftText.text = FoodHandler.getFood().description + "% Food Remaining"
-        decreaseFood()
         spawnAnimals()
+        decreaseFood()
         playerScoreLabel.text = ScoreHandler.getScore().description + " Points"
     }
     
@@ -56,6 +56,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
+            if (FoodHandler.getFood() <= 0) {
+                return
+            }
             current.createAnimals(numAnim: Int(refreshData.elapsedTime/spawnTime))
             MusicPlayer.Instance.playSfx(sfx: "musical-beep", ext: "wav")
         }

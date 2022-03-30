@@ -140,9 +140,9 @@ enum
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
         // TODO asign animal textures
         if (rand() % 2 == 0){
-            animalTextures[i] = @"crate.jpg";
+            animalTextures[i] = @"durgon.png";
         } else {
-            animalTextures[i] = @"map.jpg";
+            animalTextures[i] = @"badger.png";
         }
             
         // cube (centre, textured)
