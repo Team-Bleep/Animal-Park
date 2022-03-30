@@ -7,6 +7,7 @@
 #import <GLKit/GLKit.h>
 #include <chrono>
 #include "GLESRenderer.hpp"
+#include <stdlib.h>
 
 // small struct to hold object-specific information
 struct RenderObject
@@ -80,7 +81,7 @@ enum
     
     int animalCount;
     // moving camera automatically
-    float dist, distIncr;
+    float distx, disty, distIncr;
 }
 
 @end
@@ -133,6 +134,8 @@ enum
 
 - (void)loadAnimal:(int)animalCountx
 {
+    distx = 0;
+    disty = 0;
     animalCount = animalCountx;
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
         // TODO asign animal textures
@@ -217,10 +220,15 @@ enum
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     lastTime = std::chrono::steady_clock::now();
+    
+    distx = 0.0;
+    disty = 0.0;
+    distIncr = 0.05f;
 }
 
 - (void)update
 {
+    
     //ambientComponent = GLKVector4Make(0.16f, 0.48f, 0.6f, 1.0f);
     
     // make specular light move with camera
@@ -256,7 +264,30 @@ enum
     // add random selection of direction to move each cube (4 values, one per cube)
     // - Up (y), down (-y), left (-x), right (x)
     // check for bounds (edges of walls -- don't add if value is more than specified edges)
+ 
     
+    
+    for(int i = 0; i < animalCount; i = i+1) {
+        int rand = arc4random_uniform(4);
+        switch(rand) {
+            case 0:
+                disty = disty + distIncr;
+                break;
+            case 1:
+                disty = disty - distIncr;
+                break;
+            case 2:
+                distx = distx + distIncr;
+                break;
+            case 3:
+                distx = distx - distIncr;
+        }
+        NSLog(@"%d", rand);
+        
+        objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, distx, disty, 0);
+    }
+    // objects[0].mvp = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, dist, 0.0);
+
     
     // move each cube by specified amount per direction
     // - translation matrix?
