@@ -13,7 +13,8 @@
 struct RenderObject
 {
     GLuint vao, ibo;    // VAO and index buffer object IDs
-
+    GLuint animalTexture;
+    
     // model-view, model-view-projection and normal matrices
     GLKMatrix4 mvp, mvm;
     GLKMatrix3 normalMatrix;
@@ -96,6 +97,8 @@ enum
 
 - (void)loadBackdrop
 {
+    
+    
         // cube (centre, textured)
         glGenVertexArrays(1, &backdrop.vao);
         glGenBuffers(1, &backdrop.ibo);
@@ -107,6 +110,11 @@ enum
         glBindVertexArray(backdrop.vao);
         GLuint vbo[3];
         glGenBuffers(3, vbo);
+    
+    backgroundTexture = [self setupTexture:@"parkbg.png"];
+    glActiveTexture(GL_TEXTURE0);
+    
+    
 
         // pass on position data
         glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -145,13 +153,14 @@ enum
     disty = 0;
     animalCount = animalCountx;
     
+    
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
+        
+        
         // TODO asign animal textures
-        if (rand() % 2 == 0){
-            animalTextures[i] = @"durgon.png";
-        } else {
-            animalTextures[i] = @"badger.png";
-        }
+        
+        
+        
         
         // cube (centre, textured)
         glGenVertexArrays(1, &objects[i].vao);
@@ -160,6 +169,22 @@ enum
         // get cube data
         objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
+            
+            if (rand() % 2 == 0){
+                //animalTextures[i] = @"durgon.png";
+                objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
+                glActiveTexture(GL_TEXTURE1);
+                NSLog(@"HELP");
+            } else {
+                //animalTextures[i] = @"badger.png";
+                objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
+                glActiveTexture(GL_TEXTURE2);
+                
+            }
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+        glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
+        
         // set up VBOs (one per attribute)
         glBindVertexArray(objects[i].vao);
         GLuint vbo[3];
@@ -207,7 +232,11 @@ enum
     if (![self setupShaders])
         return;
     
-
+   
+    
+    
+    
+    
     // set up lighting values
     specularComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
     specularLightPosition = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
@@ -306,7 +335,10 @@ enum
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
     
-    backgroundTexture = [self setupTexture:@"parkbg.png"];
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+    glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
+    
     glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
     glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, backdrop.diffuseLightPosition.v);
     glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_COMPONENT], 1, backdrop.diffuseComponent.v);
@@ -318,13 +350,11 @@ enum
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
     glDrawElements(GL_TRIANGLES, (GLsizei)backdrop.numIndices, GL_UNSIGNED_INT, 0);
 
-    //crateTexture = [self setupTexture:@"crate.jpg"];
-
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
-        // TODO set up animal textures
-        if(animalTextures[i] != NULL){
-            backgroundTexture = [self setupTexture:animalTextures[i]];
-        }
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+        glUniform1i(uniforms[UNIFORM_TEXTURE], 1);
+    
         
         glUniform1i(uniforms[UNIFORM_USE_TEXTURE], 1);
         glUniform4fv(uniforms[UNIFORM_LIGHT_DIFFUSE_POSITION], 1, objects[i].diffuseLightPosition.v);
