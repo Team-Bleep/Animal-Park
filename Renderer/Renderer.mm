@@ -171,19 +171,29 @@ enum
         // get cube data
         objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
-            
-            if (rand() % 2 == 0){
-                //animalTextures[i] = @"durgon.png";
+        switch(arc4random_uniform(5)+1) {
+            case 1:
                 objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
                 glActiveTexture(GL_TEXTURE1);
                 objects[i].animalTextureIndex = 1;
-            } else {
-                //animalTextures[i] = @"badger.png";
+                break;
+            case 2:
                 objects[i].animalTexture = [self setupTexture:(@"badger.png")];
                 glActiveTexture(GL_TEXTURE2);
                 objects[i].animalTextureIndex = 2;
-            }
-        glActiveTexture(GL_TEXTURE1);
+                break;
+            case 3:
+                objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
+                glActiveTexture(GL_TEXTURE3);
+                objects[i].animalTextureIndex = 3;
+                break;
+            case 4:
+                objects[i].animalTexture = [self setupTexture:(@"pig.png")];
+                glActiveTexture(GL_TEXTURE4);
+                objects[i].animalTextureIndex = 4;
+                break;
+        }
+        
         glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
         
@@ -234,10 +244,6 @@ enum
     if (![self setupShaders])
         return;
     
-   
-    
-    
-    
     
     // set up lighting values
     specularComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
@@ -279,7 +285,7 @@ enum
     specularComponent = specComponentFlashOff;
     
     // perspective projection matrix
-    float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
+    //float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
     //GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
     
     GLKMatrix4 perspective = GLKMatrix4MakeOrtho(-1.5f,1.5f, -3, 3,1,10);
@@ -365,11 +371,20 @@ enum
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 1);
                 break;
-                
             case 2:
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 2);
+                break;
+            case 3:
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 3);
+                break;
+            case 4:
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 4);
                 break;
                 
             default:
