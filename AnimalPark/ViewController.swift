@@ -41,14 +41,14 @@ class ViewController: GLKViewController {
             glesRenderer = Renderer()
             glesRenderer.setup(view)
             glesRenderer.loadBackdrop()
+            
            // Sending vertex data to Vertex Array
          //Replacing with other vertex data
         }
     }
     
     public func createAnimals(numAnim: Int) {
-        glesRenderer.loadAnimal(4);
-        //glesRenderer.loadAnimal(Int32(numAnim))
+        glesRenderer.loadAnimal(Int32(numAnim))
         ScoreHandler.setScore(numAnim: numAnim)
     }
     

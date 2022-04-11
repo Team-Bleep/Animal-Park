@@ -161,7 +161,6 @@ enum
     
     
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
-        
         // cube (centre, textured)
         glGenVertexArrays(1, &objects[i].vao);
         glGenBuffers(1, &objects[i].ibo);
@@ -301,44 +300,19 @@ enum
 
     for(int i = 0; i < animalCount; i = i+1) {
         objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0 - i/10),1.0,1.0,0.000001);
-        //objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
-        // xrand: 1 to 3
-        // yrand: -1.5 to 1.5
-        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, objects[i].animalSpawnPosX, objects[i].animalSpawnPosY, 0), objects[i].mvp);
+        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, 0, 0, 0), objects[i].mvp);
         objects[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(objects[i].mvp), NULL);
         objects[i].mvp = GLKMatrix4Multiply(perspective, objects[i].mvp);
         
-        float x = [box2d GetAnimalPositionX:i];
-        float y = [box2d GetAnimalPositionY:i];
-        
+        // movement
+        float x = ((([box2d GetAnimalPositionX:i]-1)*(3-1))/(390 - 1)) + 1;
+        float y = ((([box2d GetAnimalPositionY:i]-1)*(1.5f-(-1.5f)))/(750-1))-1.5f;
         if (x != FLT_MAX && y != FLT_MAX) {
-            objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, x/100, y/100, 0.000001);
+            //objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, x, y, 0.000001);
+            objects[i].mvp = GLKMatrix4TranslateWithVector3(objects[i].mvp, GLKVector3Make(x,y,0));
         }
     }
-    
-    // Movement section
-    
-    // add random selection of direction to move each cube (4 values, one per cube)
-    // - Up (y), down (-y), left (-x), right (x)
-    // check for bounds (edges of walls -- don't add if value is more than specified edges)
 
-//    for(int i = 0; i < animalCount; i = i+1) {
-//        int rand = arc4random_uniform(4);
-//        switch(rand) {
-//            case 0:
-//                disty = disty + distIncr;
-//                break;
-//            case 1:
-//                disty = disty - distIncr;
-//                break;
-//            case 2:
-//                distx = distx + distIncr;
-//                break;
-//            case 3:
-//                distx = distx - distIncr;
-//        }
-//        objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, distx, disty, 0);
-//    }
 }
 
 - (void)draw:(CGRect)drawRect;

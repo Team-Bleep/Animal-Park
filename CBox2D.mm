@@ -33,7 +33,6 @@ public:
             b2Body* bodyA = contact->GetFixtureA()->GetBody();
             // Call RegisterHit (assume CBox2D object is in user data)
             CBox2D *parentObj = (__bridge CBox2D *)(bodyA->GetUserData());
-            
             //if (bodyA->GetLinearVelocity().y == 0) {
               //  float x = bodyA->GetPosition().x;
                 //float y = bodyA->GetPosition().y;
@@ -112,7 +111,7 @@ public:
             }
             // RIGHT SIDE
             else if (i == 1) {
-                wallBodyDef.position.Set(390, 5);
+                wallBodyDef.position.Set(390, 0);
                 
                 theWall[i] = world->CreateBody(&wallBodyDef);
                 
@@ -250,7 +249,6 @@ public:
 -(float)GetAnimalPositionX:(int)index
 {
     if (animal[index]) {
-        NSLog(@"XPOS: %f", animal[index]->GetPosition().x);
         return animal[index]->GetPosition().x;
         
     }
@@ -260,7 +258,6 @@ public:
 -(float)GetAnimalPositionY:(int)index
 {
     if (animal[index]) {
-        NSLog(@"YPOS: %f", animal[index]->GetPosition().y);
         return animal[index]->GetPosition().y;
     }
     return FLT_MAX; // no animal found
