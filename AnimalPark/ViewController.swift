@@ -47,7 +47,8 @@ class ViewController: GLKViewController {
     }
     
     public func createAnimals(numAnim: Int) {
-        glesRenderer.loadAnimal(Int32(numAnim))
+        glesRenderer.loadAnimal(4);
+        //glesRenderer.loadAnimal(Int32(numAnim))
         ScoreHandler.setScore(numAnim: numAnim)
     }
     

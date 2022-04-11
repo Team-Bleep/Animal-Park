@@ -8,6 +8,8 @@
 #include <chrono>
 #include "GLESRenderer.hpp"
 #include <stdlib.h>
+#include <Box2D/Box2D.h>
+#include <map>
 
 // small struct to hold object-specific information
 struct RenderObject
@@ -92,6 +94,8 @@ enum
 
 @implementation Renderer
 
+@synthesize box2d;
+
 - (void)dealloc
 {
     glDeleteProgram(programObject);
@@ -157,12 +161,6 @@ enum
     
     
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
-        
-        
-        // TODO asign animal textures
-        
-        
-        
         
         // cube (centre, textured)
         glGenVertexArrays(1, &objects[i].vao);
@@ -244,6 +242,7 @@ enum
     if (![self setupShaders])
         return;
     
+    box2d = [[CBox2D alloc] init];
     
     // set up lighting values
     specularComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
@@ -273,8 +272,11 @@ enum
 
 - (void)update
 {
-    
-    //ambientComponent = GLKVector4Make(0.16f, 0.48f, 0.6f, 1.0f);
+    // Calculate elapsed time and update Box2D
+    auto currentTime = std::chrono::steady_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
+    lastTime = currentTime;
+    [box2d Update:elapsedTime/1000.0f];
     
     // make specular light move with camera
     specularLightPosition = GLKVector4Make(0.0, 0.0f, -15.0f, 1.0f);
@@ -305,30 +307,38 @@ enum
         objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, objects[i].animalSpawnPosX, objects[i].animalSpawnPosY, 0), objects[i].mvp);
         objects[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(objects[i].mvp), NULL);
         objects[i].mvp = GLKMatrix4Multiply(perspective, objects[i].mvp);
+        
+        float x = [box2d GetAnimalPositionX:i];
+        float y = [box2d GetAnimalPositionY:i];
+        
+        if (x != FLT_MAX && y != FLT_MAX) {
+            objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, x/100, y/100, 0.000001);
+        }
     }
     
-    /// Movement section
+    // Movement section
+    
     // add random selection of direction to move each cube (4 values, one per cube)
     // - Up (y), down (-y), left (-x), right (x)
     // check for bounds (edges of walls -- don't add if value is more than specified edges)
 
-    for(int i = 0; i < animalCount; i = i+1) {
-        int rand = arc4random_uniform(4);
-        switch(rand) {
-            case 0:
-                disty = disty + distIncr;
-                break;
-            case 1:
-                disty = disty - distIncr;
-                break;
-            case 2:
-                distx = distx + distIncr;
-                break;
-            case 3:
-                distx = distx - distIncr;
-        }
-        objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, distx, disty, 0);
-    }
+//    for(int i = 0; i < animalCount; i = i+1) {
+//        int rand = arc4random_uniform(4);
+//        switch(rand) {
+//            case 0:
+//                disty = disty + distIncr;
+//                break;
+//            case 1:
+//                disty = disty - distIncr;
+//                break;
+//            case 2:
+//                distx = distx + distIncr;
+//                break;
+//            case 3:
+//                distx = distx - distIncr;
+//        }
+//        objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, distx, disty, 0);
+//    }
 }
 
 - (void)draw:(CGRect)drawRect;

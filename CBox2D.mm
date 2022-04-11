@@ -34,17 +34,16 @@ public:
             // Call RegisterHit (assume CBox2D object is in user data)
             CBox2D *parentObj = (__bridge CBox2D *)(bodyA->GetUserData());
             
-            if (bodyA->GetLinearVelocity().y == 0) {
-                float x = bodyA->GetPosition().x;
-                float y = bodyA->GetPosition().y;
-                [parentObj RegisterHit:x Ex: y]; // uses RegisterHit function as a callback
-            }
+            //if (bodyA->GetLinearVelocity().y == 0) {
+              //  float x = bodyA->GetPosition().x;
+                //float y = bodyA->GetPosition().y;
+                //[parentObj RegisterHit:x Ex: y]; // uses RegisterHit function as a callback
+            //}
             
         }
     }
     void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {};
 };
-
 
 #pragma mark - CBox2D
 
@@ -54,94 +53,38 @@ public:
     b2Vec2 *gravity;
     b2World *world;
     
-    b2BodyDef *groundBodyDef[NUM_BRICKS];
-    b2Body *groundBody[NUM_BRICKS];
-    b2PolygonShape *groundBox[NUM_BRICKS];
-    b2Body *theBrick[NUM_BRICKS];
+    b2BodyDef *wallBodyDef[4];
+    b2Body *wallBody[4];
+    b2PolygonShape *wallBox[4];
+    b2Body *theWall[4];
     
-    b2BodyDef *wallBodyDef[3];
-    b2Body *wallBody[3];
-    b2PolygonShape *wallBox[3];
-    b2Body *theWall[3];
-    
-    b2Body *theBall;
-    
-    b2BodyDef *paddleBodyDef;
-    b2Body *paddleBody;
-    b2PolygonShape *paddleBox;
-    b2Body *thePaddle;
+    b2Body *animal[4];
+    bool movementStarted;
     
     CContactListener *contactListener;
     float totalElapsedTime;
-
-    // You will also need some extra variables here for the logic
-    bool ballHitBrick;
-    bool ballLaunched;
-    
-    int brickKilledIndex;
-    int paddleMove;
-    int score;
-    int lives;
-    
-    float currPosX;
 }
 @end
 
 @implementation CBox2D
 
+@synthesize numAnimals;
+
 - (instancetype)init
 {
+    
     self = [super init];
     if (self) {
+        numAnimals = 4;
         // Initialize Box2D
         gravity = new b2Vec2(0.0f, 0.0f);
         world = new b2World(*gravity);
 
-        // For brick & ball sample
         contactListener = new CContactListener();
         world->SetContactListener(contactListener);
         
-        // Set up the brick objects
-        for (int i = 0; i < NUM_BRICKS; i++) {
-            b2BodyDef brickBodyDef;
-            brickBodyDef.type = b2_staticBody;
-            float spacerX = (BRICK_WIDTH*1.2);
-            float spacerY = (BRICK_HEIGHT * 1.8);
-            if (i/3 == 0) {
-                spacerX = spacerX * i;
-                brickBodyDef.position.Set(BRICK_POS_X + spacerX, BRICK_POS_Y);
-            }
-            else if (i/3 == 1) {
-                spacerX = spacerX * (i - 3);
-                brickBodyDef.position.Set(BRICK_POS_X + spacerX, BRICK_POS_Y - spacerY);
-            }
-            else if (i/3 == 2) {
-                spacerX = spacerX * (i - 6);
-                spacerY = spacerY * 2;
-                brickBodyDef.position.Set(BRICK_POS_X + spacerX, BRICK_POS_Y - spacerY);
-            }
-                
-            theBrick[i] = world->CreateBody(&brickBodyDef);
-            
-            if (theBrick[i]) {
-                theBrick[i]->SetUserData((__bridge void *)self);
-                theBrick[i]->SetAwake(false);
-                
-                b2PolygonShape dynamicBox;
-                dynamicBox.SetAsBox(BRICK_WIDTH/2, BRICK_HEIGHT/2);
-                
-                b2FixtureDef fixtureDef; // definition for collision detection
-                fixtureDef.shape = &dynamicBox;
-                fixtureDef.density = 1.0f;
-                fixtureDef.friction = 0.0f;
-                fixtureDef.restitution = 1.0f;
-                
-                theBrick[i]->CreateFixture(&fixtureDef); // ACTUAL collision detection
-            }
-        }
-        
-        // Set up the 3 walls
-        for (int i = 0; i < 3; i++) {
+        // Set up the 4 walls
+        for (int i = 0; i < 4; i++) {
             b2BodyDef wallBodyDef;
             wallBodyDef.type = b2_staticBody;
             
@@ -169,7 +112,7 @@ public:
             }
             // RIGHT SIDE
             else if (i == 1) {
-                wallBodyDef.position.Set(390, 0);
+                wallBodyDef.position.Set(390, 5);
                 
                 theWall[i] = world->CreateBody(&wallBodyDef);
                 
@@ -189,8 +132,8 @@ public:
                     theWall[i]->CreateFixture(&fixtureDef); // ACTUAL collision detection
                 }
             }
-            else if (i == 2) {
-                wallBodyDef.position.Set(390, 844-BALL_RADIUS);
+            else if (i == 2) { // top
+                wallBodyDef.position.Set(390, 844);
                 
                 theWall[i] = world->CreateBody(&wallBodyDef);
                 
@@ -208,149 +151,86 @@ public:
                     fixtureDef.restitution = 1.0f;
                     
                     theWall[i]->CreateFixture(&fixtureDef); // ACTUAL collision detection
-                }            }
+                }
+            }
+            else if (i == 3) { // bot
+                wallBodyDef.position.Set(390, 5);
                 
-            
-        }
-
-        
-        // CREATE THE PADDLE
-        b2BodyDef paddleBodyDef;
-        paddleBodyDef.type = b2_staticBody;
-        paddleBodyDef.position.Set(PADDLE_POS_X, PADDLE_POS_Y);
-        thePaddle = world->CreateBody(&paddleBodyDef);
-        
-        if (thePaddle) {
-            thePaddle->SetUserData((__bridge void *)self);
-            thePaddle->SetAwake(false);
-            
-            b2PolygonShape dynamicBox;
-            dynamicBox.SetAsBox(PADDLE_WIDTH/2, PADDLE_HEIGHT/2);
-            
-            b2FixtureDef fixtureDef; // definition for collision detection
-            fixtureDef.shape = &dynamicBox;
-            fixtureDef.density = 1.0f;
-            fixtureDef.friction = 0.0f;
-            fixtureDef.restitution = 1.0f;
-            
-            thePaddle->CreateFixture(&fixtureDef); // ACTUAL collision detection
+                theWall[i] = world->CreateBody(&wallBodyDef);
+                
+                if (theWall[i]) {
+                    theWall[i]->SetUserData((__bridge void *)self);
+                    theWall[i]->SetAwake(false);
+                    
+                    b2PolygonShape dynamicBox;
+                    dynamicBox.SetAsBox(390, 5);
+                    
+                    b2FixtureDef fixtureDef; // definition for collision detection
+                    fixtureDef.shape = &dynamicBox;
+                    fixtureDef.density = 1.0f;
+                    fixtureDef.friction = 0.0f;
+                    fixtureDef.restitution = 1.0f;
+                    
+                    theWall[i]->CreateFixture(&fixtureDef); // ACTUAL collision detection
+                }
+            }
         }
         
-        // CREATE THE BALL
-        b2BodyDef ballBodyDef; // Only a reference to the physics body
-        ballBodyDef.type = b2_dynamicBody;
-        ballBodyDef.position.Set(BALL_POS_X, BALL_POS_Y);
-        theBall = world->CreateBody(&ballBodyDef); // ACTUAL physics body
-        
-        if (theBall) {
-            theBall->SetUserData((__bridge void *)self);
-            theBall->SetAwake(false);
-            b2CircleShape circle;
-            circle.m_p.Set(0, 0); // pos in relation to physics body?
-            circle.m_radius = BALL_RADIUS;
+        for (int i = 0; i < numAnimals; i++) {
+            b2BodyDef animBodyDef;
+            animBodyDef.type = b2_dynamicBody;
+            animBodyDef.position.Set(BALL_POS_X, BALL_POS_Y);
+            animal[i] = world->CreateBody(&animBodyDef);
             
-            b2FixtureDef circleFixtureDef;  // collider definition
-            circleFixtureDef.shape = &circle;
-            circleFixtureDef.density = 1.0f;
-            circleFixtureDef.friction = 0.0f;
-            circleFixtureDef.restitution = 1.0f;
-            
-            theBall->CreateFixture(&circleFixtureDef); // ACTUAL collision detection
+            if (animal[i]) {
+                animal[i]->SetUserData((__bridge void *)self);
+                animal[i]->SetAwake(false);
+                
+                // SET ANIMAL SIZE / 2
+                b2PolygonShape dynamicBox;
+                dynamicBox.SetAsBox(50, 50);
+                
+                b2FixtureDef circleFixtureDef;  // collider definition
+                circleFixtureDef.shape = &dynamicBox;
+                circleFixtureDef.density = 1.0f;
+                circleFixtureDef.friction = 0.0f;
+                circleFixtureDef.restitution = 1.0f;
+                
+                animal[i]->CreateFixture(&circleFixtureDef); // ACTUAL collision detection
+            }
         }
+        
         
         // Initial values:
         totalElapsedTime = 0;
-        ballHitBrick = false;
-        ballLaunched = false;
-        paddleMove = 0;
-        brickKilledIndex = -1;
-        score = 0;
-        lives = 3;
-        currPosX = PADDLE_POS_X;
+        movementStarted = true;
     }
     return self;
 }
 
--(void) UpdatePaddleMovement:(int)direction
-{
-    paddleMove = direction;
-}
-
-- (void)dealloc
+-(void)dealloc
 {
     if (gravity) delete gravity;
     if (world) delete world;
-    
-    for (int i = 0; i < NUM_BRICKS; i++) {
-        if (groundBodyDef[i]) delete groundBodyDef[i];
-        if (groundBox[i]) delete groundBox[i];
-    }
-    
     if (contactListener) delete contactListener;
 }
 
 -(void)Update:(float)elapsedTime
 {
-    if (theBall->GetPosition().y < BALL_RADIUS) {
-        totalElapsedTime = 0;
-        theBall->SetLinearVelocity(b2Vec2(0,0));
-        theBall->SetTransform(b2Vec2(BALL_POS_X, BALL_POS_Y), 0);
+    
+    if (movementStarted) {
         
-        if (lives > 0){
-            lives --;
-        }
-    }
-    
-    if (ballLaunched) {
-        //theBall->ApplyLinearImpulse(b2Vec2(BALL_VELOCITY, BALL_VELOCITY), theBall->GetPosition(), true);
-        theBall->SetLinearVelocity(b2Vec2(BALL_VELOCITY, BALL_VELOCITY));
-        theBall->SetAwake(true);
-        ballLaunched = false;
-    }
-    if (brickKilledIndex > -1) {
-        world->DestroyBody(theBrick[brickKilledIndex]);
-        theBrick[brickKilledIndex] = NULL;
-        brickKilledIndex = -1;
-    }
-    
-    if (paddleMove == 1) {
-        currPosX += PADDLE_VELOCITY;
-        if (currPosX >= 390-PADDLE_WIDTH/2) {
-            paddleMove = -1;
-        }
-    }
-    else if (paddleMove == -1) {
-        currPosX -= PADDLE_VELOCITY;
-        if (currPosX <= PADDLE_WIDTH/2) {
-            paddleMove = 1;
-        }
-    }
-    thePaddle->SetAwake(true);
-    thePaddle->SetTransform(b2Vec2(currPosX, PADDLE_POS_Y), 0);
-    
-    // Check if it is time yet to drop the brick, and if so
-    //  call SetAwake()
-    totalElapsedTime += elapsedTime;
-    
-    
-    if (totalElapsedTime > BRICK_WAIT && totalElapsedTime <= BRICK_WAIT+1){
-        for (int i = 0; i < NUM_BRICKS; i++) {
-            if (theBrick[i]) {
-                theBrick[i]->SetAwake(true);
-                ballLaunched = true;
+        // SET ANIMAL DIRECTION
+        for (int i = 0; i < numAnimals; i++) {
+            if (animal[i]) {
+                animal[i]->SetLinearVelocity(b2Vec2(BALL_VELOCITY, BALL_VELOCITY));
+                animal[i]->SetAwake(true);
             }
         }
+        movementStarted = false;
     }
-    // If the last collision test was positive,
-    //  stop the ball and destroy the brick
-    if (ballHitBrick) {
-        //theBall->SetLinearVelocity(b2Vec2(0, 0));
-        //theBall->SetAngularVelocity(0);
-        //theBall->SetActive(false);
-        
-        ballHitBrick = false;
-        //NSLog(@"touched");
-    }
+    totalElapsedTime += elapsedTime;
+    
 
     if (world)
     {
@@ -367,50 +247,23 @@ public:
     }
 }
 
--(void)RegisterHit: (float)posX Ex:(float)posY
+-(float)GetAnimalPositionX:(int)index
 {
-    theBall->SetAngularVelocity(0);
-    // Get brick positions and find the one hit
-    for (int i = 0; i < NUM_BRICKS; i++) {
-        if (theBrick[i] && theBrick[i]->GetPosition().x == posX && theBrick[i]->GetPosition().y == posY) {
-            brickKilledIndex = i;
-            score++;
-            return;
-        }
+    if (animal[index]) {
+        NSLog(@"XPOS: %f", animal[index]->GetPosition().x);
+        return animal[index]->GetPosition().x;
+        
     }
+    return FLT_MAX; // no animal found
 }
 
--(void)LaunchBall
+-(float)GetAnimalPositionY:(int)index
 {
-    // Set some flag here for processing later...
-    //ballLaunched = true;
-}
-
--(void *)GetObjectPositions
-{
-    auto *objPosList = new std::map<const char *,b2Vec2>;
-    if (theBall) {
-        (*objPosList)["ball"] = theBall->GetPosition();
+    if (animal[index]) {
+        NSLog(@"YPOS: %f", animal[index]->GetPosition().y);
+        return animal[index]->GetPosition().y;
     }
-    
-    if (thePaddle) {
-        (*objPosList)["paddle"] = thePaddle->GetPosition();
-    }
-    
-    for (int i = 0; i < NUM_BRICKS; i++) {
-        if (theBrick[i]) {
-            (*objPosList)[&"brick" [ (i)]] = theBrick[i]->GetPosition();
-        }
-    }
-    return reinterpret_cast<void *>(objPosList);
-}
-
--(int)GetScore{
-    return score;
-}
-
--(int)GetLives{
-    return lives;
+    return FLT_MAX; // no animal found
 }
 
 @end

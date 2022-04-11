@@ -32,14 +32,12 @@
 
 @interface CBox2D : NSObject 
 
--(void) LaunchBall;                 // launch the ball
--(void) Update:(float)elapsedTime;  // update the Box2D engine
--(void) RegisterHit:(float)posx Ex:(float)posy;                // Register when the ball hits the brick
--(void *)GetObjectPositions;        // Get the positions of the ball and brick
--(void) UpdatePaddleMovement:(int)direction; // move the paddle
--(int) GetScore;
--(int) GetLives;
+@property int numAnimals;
 
+-(void) Update:(float)elapsedTime;  // update the Box2D engine
+//-(void) RegisterHit:(float)posx Ex:(float)posy;                // Register when the ball hits the brick
+-(float) GetAnimalPositionX:(int)index;
+-(float) GetAnimalPositionY:(int)index;
 @end
 
 #endif
