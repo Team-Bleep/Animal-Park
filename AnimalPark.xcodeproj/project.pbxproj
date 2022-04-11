@@ -15,6 +15,8 @@
 		79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */; };
 		D58466682803AD04005F66DB /* anteater.png in Resources */ = {isa = PBXBuildFile; fileRef = D58466672803AD04005F66DB /* anteater.png */; };
 		D584666A2803AD09005F66DB /* pig.png in Resources */ = {isa = PBXBuildFile; fileRef = D58466692803AD09005F66DB /* pig.png */; };
+		D584666C2803B046005F66DB /* Box2D in Resources */ = {isa = PBXBuildFile; fileRef = D584666B2803B046005F66DB /* Box2D */; };
+		D584666F2803B060005F66DB /* CBox2D.mm in Sources */ = {isa = PBXBuildFile; fileRef = D584666E2803B060005F66DB /* CBox2D.mm */; };
 		D5A32B3727EFE00500BD0221 /* FoodHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A32B3627EFE00500BD0221 /* FoodHandler.swift */; };
 		D5DAEE9227C1F79900631DF9 /* CurrencyHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */; };
 		D82C378227AE4B5D00256AD9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82C378127AE4B5D00256AD9 /* AppDelegate.swift */; };
@@ -45,6 +47,9 @@
 		79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Animal Paws.ttf"; sourceTree = "<group>"; };
 		D58466672803AD04005F66DB /* anteater.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = anteater.png; sourceTree = "<group>"; };
 		D58466692803AD09005F66DB /* pig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pig.png; sourceTree = "<group>"; };
+		D584666B2803B046005F66DB /* Box2D */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Box2D; sourceTree = "<group>"; };
+		D584666D2803B059005F66DB /* CBox2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBox2D.h; sourceTree = "<group>"; };
+		D584666E2803B060005F66DB /* CBox2D.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CBox2D.mm; sourceTree = "<group>"; };
 		D5A32B3627EFE00500BD0221 /* FoodHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHandler.swift; sourceTree = "<group>"; };
 		D5DAEE9127C1F79900631DF9 /* CurrencyHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyHandler.swift; sourceTree = "<group>"; };
 		D82C377E27AE4B5D00256AD9 /* AnimalPark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimalPark.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -111,6 +116,9 @@
 		D82C377527AE4B5D00256AD9 = {
 			isa = PBXGroup;
 			children = (
+				D584666E2803B060005F66DB /* CBox2D.mm */,
+				D584666D2803B059005F66DB /* CBox2D.h */,
+				D584666B2803B046005F66DB /* Box2D */,
 				EC0D2E1327F3A98600CAFFDC /* ScoreHandler.swift */,
 				EC03822127F1370600475DB3 /* Audio */,
 				EC03821F27F1311100475DB3 /* MusicPlayer.swift */,
@@ -255,6 +263,7 @@
 				EC00DAC427F4119B001C12E9 /* durgon.png in Resources */,
 				79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */,
 				558D2AAE27F2E81D0003DC2B /* crate.jpg in Resources */,
+				D584666C2803B046005F66DB /* Box2D in Resources */,
 				EC00DAC527F4119B001C12E9 /* badger.png in Resources */,
 				D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */,
 				D58466682803AD04005F66DB /* anteater.png in Resources */,
@@ -286,6 +295,7 @@
 				EC0D2E1427F3A98600CAFFDC /* ScoreHandler.swift in Sources */,
 				7944D33E27C644B300CA1A56 /* Toy.swift in Sources */,
 				D85032FF27C0E9310045BD14 /* GLESRenderer.cpp in Sources */,
+				D584666F2803B060005F66DB /* CBox2D.mm in Sources */,
 				D5DAEE9227C1F79900631DF9 /* CurrencyHandler.swift in Sources */,
 				D5A32B3727EFE00500BD0221 /* FoodHandler.swift in Sources */,
 			);
