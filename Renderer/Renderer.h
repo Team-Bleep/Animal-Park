@@ -8,10 +8,11 @@
 #ifndef Renderer_h
 #define Renderer_h
 #import <GLKit/GLKit.h>
+#import "CBox2D.h"
 
 @interface Renderer : NSObject
 
-@property bool isTest;
+@property (strong, nonatomic) CBox2D *box2d;
 
 - (void)setup:(GLKView *)view;
 - (void)loadBackdrop;

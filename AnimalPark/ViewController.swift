@@ -41,6 +41,7 @@ class ViewController: GLKViewController {
             glesRenderer = Renderer()
             glesRenderer.setup(view)
             glesRenderer.loadBackdrop()
+            
            // Sending vertex data to Vertex Array
          //Replacing with other vertex data
         }

@@ -8,6 +8,8 @@
 #include <chrono>
 #include "GLESRenderer.hpp"
 #include <stdlib.h>
+#include <Box2D/Box2D.h>
+#include <map>
 
 // small struct to hold object-specific information
 struct RenderObject
@@ -92,6 +94,8 @@ enum
 
 @implementation Renderer
 
+@synthesize box2d;
+
 - (void)dealloc
 {
     glDeleteProgram(programObject);
@@ -157,13 +161,6 @@ enum
     
     
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
-        
-        
-        // TODO asign animal textures
-        
-        
-        
-        
         // cube (centre, textured)
         glGenVertexArrays(1, &objects[i].vao);
         glGenBuffers(1, &objects[i].ibo);
@@ -171,19 +168,29 @@ enum
         // get cube data
         objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
-            
-            if (rand() % 2 == 0){
-                //animalTextures[i] = @"durgon.png";
+        switch(arc4random_uniform(5)+1) {
+            case 1:
                 objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
                 glActiveTexture(GL_TEXTURE1);
                 objects[i].animalTextureIndex = 1;
-            } else {
-                //animalTextures[i] = @"badger.png";
+                break;
+            case 2:
                 objects[i].animalTexture = [self setupTexture:(@"badger.png")];
                 glActiveTexture(GL_TEXTURE2);
                 objects[i].animalTextureIndex = 2;
-            }
-        glActiveTexture(GL_TEXTURE1);
+                break;
+            case 3:
+                objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
+                glActiveTexture(GL_TEXTURE3);
+                objects[i].animalTextureIndex = 3;
+                break;
+            case 4:
+                objects[i].animalTexture = [self setupTexture:(@"pig.png")];
+                glActiveTexture(GL_TEXTURE4);
+                objects[i].animalTextureIndex = 4;
+                break;
+        }
+        
         glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
         
@@ -234,10 +241,7 @@ enum
     if (![self setupShaders])
         return;
     
-   
-    
-    
-    
+    box2d = [[CBox2D alloc] init];
     
     // set up lighting values
     specularComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
@@ -267,8 +271,11 @@ enum
 
 - (void)update
 {
-    
-    //ambientComponent = GLKVector4Make(0.16f, 0.48f, 0.6f, 1.0f);
+    // Calculate elapsed time and update Box2D
+    auto currentTime = std::chrono::steady_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
+    lastTime = currentTime;
+    [box2d Update:elapsedTime/1000.0f];
     
     // make specular light move with camera
     specularLightPosition = GLKVector4Make(0.0, 0.0f, -15.0f, 1.0f);
@@ -279,7 +286,7 @@ enum
     specularComponent = specComponentFlashOff;
     
     // perspective projection matrix
-    float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
+    //float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
     //GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
     
     GLKMatrix4 perspective = GLKMatrix4MakeOrtho(-1.5f,1.5f, -3, 3,1,10);
@@ -293,36 +300,19 @@ enum
 
     for(int i = 0; i < animalCount; i = i+1) {
         objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0 - i/10),1.0,1.0,0.000001);
-        //objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
-        // xrand: 1 to 3
-        // yrand: -1.5 to 1.5
-        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, objects[i].animalSpawnPosX, objects[i].animalSpawnPosY, 0), objects[i].mvp);
+        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, 0, 0, 0), objects[i].mvp);
         objects[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(objects[i].mvp), NULL);
         objects[i].mvp = GLKMatrix4Multiply(perspective, objects[i].mvp);
-    }
-    
-    /// Movement section
-    // add random selection of direction to move each cube (4 values, one per cube)
-    // - Up (y), down (-y), left (-x), right (x)
-    // check for bounds (edges of walls -- don't add if value is more than specified edges)
-
-    for(int i = 0; i < animalCount; i = i+1) {
-        int rand = arc4random_uniform(4);
-        switch(rand) {
-            case 0:
-                disty = disty + distIncr;
-                break;
-            case 1:
-                disty = disty - distIncr;
-                break;
-            case 2:
-                distx = distx + distIncr;
-                break;
-            case 3:
-                distx = distx - distIncr;
+        
+        // movement
+        float x = ((([box2d GetAnimalPositionX:i]-1)*(3-1))/(390 - 1)) + 1;
+        float y = ((([box2d GetAnimalPositionY:i]-1)*(1.5f-(-1.5f)))/(750-1))-1.5f;
+        if (x != FLT_MAX && y != FLT_MAX) {
+            //objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, x, y, 0.000001);
+            objects[i].mvp = GLKMatrix4TranslateWithVector3(objects[i].mvp, GLKVector3Make(x,y,0));
         }
-        objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, distx, disty, 0);
     }
+
 }
 
 - (void)draw:(CGRect)drawRect;
@@ -365,11 +355,20 @@ enum
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 1);
                 break;
-                
             case 2:
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 2);
+                break;
+            case 3:
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 3);
+                break;
+            case 4:
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 4);
                 break;
                 
             default:
