@@ -110,7 +110,7 @@ enum
         glGenBuffers(1, &backdrop.ibo);
 
         // get cube data
-       backdrop.numIndices = glesRenderer.GenCube(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
+       backdrop.numIndices = glesRenderer.GenAnimal(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
 
         // set up VBOs (one per attribute)
         glBindVertexArray(backdrop.vao);
@@ -166,7 +166,7 @@ enum
         glGenBuffers(1, &objects[i].ibo);
 
         // get cube data
-        objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
+        objects[i].numIndices = glesRenderer.GenAnimal(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
         switch(arc4random_uniform(5)+1) {
             case 1:

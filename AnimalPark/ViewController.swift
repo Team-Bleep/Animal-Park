@@ -19,7 +19,7 @@ let defaults = UserDefaults.standard
 
 extension ViewController: GLKViewControllerDelegate {
     func glkViewControllerUpdate(_ controller: GLKViewController) {
-        glesRenderer.update();
+        glesRenderer.update(); // OpenGL Renderer update, runs every frame
     }
 }
 
@@ -32,6 +32,7 @@ class ViewController: GLKViewController {
     @IBOutlet weak var tutorialButt: UIButton!
     @IBOutlet weak var tutorialImage: UIImageView!
     
+    // Setup OpenGL view and load backdrop
     private func setupGL() {
         context = EAGLContext(api: .openGLES3)
         EAGLContext.setCurrent(context)
@@ -41,28 +42,25 @@ class ViewController: GLKViewController {
             glesRenderer = Renderer()
             glesRenderer.setup(view)
             glesRenderer.loadBackdrop()
-            
-           // Sending vertex data to Vertex Array
-         //Replacing with other vertex data
         }
     }
     
+    // Load animals into the scene and increase Animal Encounter score
     public func createAnimals(numAnim: Int) {
         glesRenderer.loadAnimal(Int32(numAnim))
         ScoreHandler.setScore(numAnim: numAnim)
     }
     
-    public func despawnAnimals(){
+    // Despawn animals
+    public func despawnAnimals() {
         glesRenderer.despawnAnimals();
-        print("hello there");
     }
     
     override func viewDidLoad() {
-        
-        // add the new font from the font folder that was loaded into info.plist
-        guard let animalPawsFont = UIFont(name: "AnimalPaws", size: UIFont.labelFontSize) else {
+        // Add the new font from the font folder that was loaded into info.plist
+        guard let animalPawsFont = UIFont(name: "GloriaHallelujah", size: UIFont.labelFontSize) else {
             fatalError("""
-                Failed to load the "AnimalPaws" font.
+                Failed to load the "GloriaHallelujah" font.
                 Make sure the font file is included in the project and the font name
                 is spelled correctly.
             """)
@@ -70,6 +68,7 @@ class ViewController: GLKViewController {
         
         super.viewDidLoad()
         setupGL()
+        
         // Do any additional setup after loading the view.
         refreshData.lastOpened = Int(Date().timeIntervalSinceReferenceDate)
         
@@ -92,17 +91,20 @@ class ViewController: GLKViewController {
         playerScoreLabel.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(20)
         self.view.addSubview(playerScoreLabel)
         
+        // Food left Label
         foodLeftText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-80, width: 300, height: 50)
         foodLeftText.textColor = UIColor.black
         foodLeftText.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(20)
         self.view.addSubview(foodLeftText)
         
+        // Food cost Label
         foodCostText.frame = CGRect(x: 5, y: UIScreen.main.bounds.height-45, width: 300, height: 20)
         foodCostText.textColor = UIColor.black
         foodCostText.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(16)
         foodCostText.text = "Refill Cost: " + String(FoodHandler.FoodCost) + " Animal Coins";
         self.view.addSubview(foodCostText)
         
+        // Food Refill Button
         foodRefillButton.backgroundColor = .gray;
         foodRefillButton.layer.borderColor = UIColor.black.cgColor;
         foodRefillButton.layer.borderWidth = 2;
@@ -124,14 +126,9 @@ class ViewController: GLKViewController {
         }
 
         MusicPlayer.Instance.startBgMusic()
-        
-        /// to print all possible font names and find fontname specified for font
-        //for family in UIFont.familyNames.sorted() {
-        //    let names = UIFont.fontNames(forFamilyName: family)
-        //    print("Family: \(family) Font names: \(names)")
-        //}
     }
     
+    // Tutorial toggle function
     @IBAction func toggleTutorial() {
         tutorialImage.isHidden = !tutorialImage.isHidden
     }
