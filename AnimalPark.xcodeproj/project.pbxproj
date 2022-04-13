@@ -80,6 +80,7 @@
 		EC00DAC527F4119B001C12E9 /* badger.png in Resources */ = {isa = PBXBuildFile; fileRef = EC00DAC327F4119B001C12E9 /* badger.png */; };
 		EC03822027F1311100475DB3 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC03821F27F1311100475DB3 /* MusicPlayer.swift */; };
 		EC0D2E1427F3A98600CAFFDC /* ScoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D2E1327F3A98600CAFFDC /* ScoreHandler.swift */; };
+		EC9D150E2806709C005722BC /* tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = EC9D150D2806709C005722BC /* tutorial.png */; };
 		ECAB503127F2861F00A8C3E7 /* haru-ni-yosete.wav in Resources */ = {isa = PBXBuildFile; fileRef = ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */; };
 		ECAB503327F28A3F00A8C3E7 /* musical-beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */; };
 /* End PBXBuildFile section */
@@ -211,6 +212,7 @@
 		EC00DAC327F4119B001C12E9 /* badger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = badger.png; sourceTree = "<group>"; };
 		EC03821F27F1311100475DB3 /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
 		EC0D2E1327F3A98600CAFFDC /* ScoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreHandler.swift; sourceTree = "<group>"; };
+		EC9D150D2806709C005722BC /* tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial.png; sourceTree = "<group>"; };
 		ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "haru-ni-yosete.wav"; sourceTree = "<group>"; };
 		ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "musical-beep.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -457,6 +459,7 @@
 		D85876D727C1904D001E0FF6 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				EC9D150D2806709C005722BC /* tutorial.png */,
 				D58466692803AD09005F66DB /* pig.png */,
 				D58466672803AD04005F66DB /* anteater.png */,
 				EC00DAC327F4119B001C12E9 /* badger.png */,
@@ -561,6 +564,7 @@
 				558D2AAE27F2E81D0003DC2B /* crate.jpg in Resources */,
 				D57D1F102806581400BF0A9E /* boop.wav in Resources */,
 				EC00DAC527F4119B001C12E9 /* badger.png in Resources */,
+				EC9D150E2806709C005722BC /* tutorial.png in Resources */,
 				D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */,
 				D58466682803AD04005F66DB /* anteater.png in Resources */,
 				D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */,

@@ -39,7 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         foodLeftText.text = FoodHandler.getFood().description + "% Food Remaining"
         spawnAnimals()
         decreaseFood()
-        playerScoreLabel.text = ScoreHandler.getScore().description + " Points"
+        playerScoreLabel.text = ScoreHandler.getScore().description + " Animals Encountered"
     }
     
     func decreaseFood() {
