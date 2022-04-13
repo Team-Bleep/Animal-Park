@@ -75,8 +75,10 @@ class ViewController: GLKViewController {
         
         // Tutorial Setup
         tutorialButt.setImage(UIImage(systemName: "info.circle.fill"), for: .normal)
-        tutorialImage.isHidden = true;
-        tutorialImage.layer.zPosition = 10;
+        tutorialImage.isHidden = true
+        tutorialImage.layer.borderWidth = 5
+        tutorialImage.layer.borderColor = UIColor.black.cgColor
+        tutorialImage.layer.zPosition = 10
         
         // Animal Coins Label
         dateLabelTest.frame = CGRect(x: 25, y: 0, width: 300, height: 100)
@@ -110,6 +112,10 @@ class ViewController: GLKViewController {
         foodRefillButton.addTarget(self, action: #selector(refillFoodClicked(sender:)), for: .touchUpInside);
         self.view.addSubview(foodRefillButton);
         
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(self.doSingleTap(_:)))
+        singleTap.numberOfTapsRequired = 1
+        view.addGestureRecognizer(singleTap)
+        
         // Check if first time opening app, initializes currency saver
         if UserDefaults.standard.object(forKey: "firstLaunch") == nil {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
@@ -128,6 +134,14 @@ class ViewController: GLKViewController {
     
     @IBAction func toggleTutorial() {
         tutorialImage.isHidden = !tutorialImage.isHidden
+    }
+
+    @objc func doSingleTap(_ sender: UITapGestureRecognizer) {
+        let sound = glesRenderer.box2d.registerTap(Float(sender.location(in: view).x), ex: Float(sender.location(in: view).y));
+        if (sound) {
+            MusicPlayer.Instance.playSfx(sfx: "boop", ext: "wav");
+            print("boop");
+        }
     }
     
     @objc func refillFoodClicked(sender:UIButton!) {
