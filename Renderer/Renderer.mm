@@ -146,6 +146,7 @@ enum {
     }
 }
 
+// Load Animal textures Randomly
 - (void)loadAnimal:(int)animalCountx {
     distx = 0;
     disty = 0;
@@ -159,6 +160,7 @@ enum {
         // get cube data
         objects[i].numIndices = glesRenderer.GenAnimal(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
+        // Randomized animal texture loaded
         switch(arc4random_uniform(5)+1) {
             case 1:
                 objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
@@ -277,8 +279,8 @@ enum {
     glBindVertexArray(0);
 }
 
-- (void)setup:(GLKView *)view
-{
+// Initialize EAGLContext, Lighting and Box2D
+- (void)setup:(GLKView *)view {
     view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     
     if (!view.context) {
@@ -291,6 +293,7 @@ enum {
     if (![self setupShaders])
         return;
     
+    // Initialize Box2D
     box2d = [[CBox2D alloc] init];
     
     // set up lighting values
@@ -310,8 +313,6 @@ enum {
     
     // Set background/sky colour
     glClearColor(0.5764f, 0.74509f, 0.929411f, 1.0f);
-    //glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
     lastTime = std::chrono::steady_clock::now();
     
     distx = 0.0;
@@ -319,8 +320,7 @@ enum {
     distIncr = 0.05f;
 }
 
-- (void)update
-{
+- (void)update {
     // Calculate elapsed time and update Box2D
     auto currentTime = std::chrono::steady_clock::now();
     auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
@@ -334,10 +334,6 @@ enum {
     float shininessFlashOff = 200.0;
     shininess = shininessFlashOff;
     specularComponent = specComponentFlashOff;
-    
-    // perspective projection matrix
-    //float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
-    //GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
     
     GLKMatrix4 perspective = GLKMatrix4MakeOrtho(-1.5f,1.5f, -3, 3,1,10);
     
@@ -365,8 +361,8 @@ enum {
 
 }
 
-- (void)draw:(CGRect)drawRect;
-{
+// Draw using OpenGL
+- (void)draw:(CGRect)drawRect; {
     // pass on global lighting, fog and texture values
     
     glUniform4fv(uniforms[UNIFORM_LIGHT_SPECULAR_POSITION], 1, specularLightPosition.v);
@@ -475,10 +471,8 @@ enum {
     }
 }
 
-
-- (bool)setupShaders
-{
-    // Load shaders
+// Setup shaders OpenGL program objects
+- (bool)setupShaders {
     char *vShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"VertexShader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"VertexShader.vsh"] pathExtension]] cStringUsingEncoding:1]);
     char *fShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"FragmentShader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"FragmentShader.fsh"] pathExtension]] cStringUsingEncoding:1]);
     programObject = glesRenderer.LoadProgram(vShaderStr, fShaderStr);
@@ -502,8 +496,7 @@ enum {
 
 
 // Load in and set up texture image (adapted from Ray Wenderlich)
-- (GLuint)setupTexture:(NSString *)fileName
-{
+- (GLuint)setupTexture:(NSString *)fileName {
     CGImageRef spriteImage = [UIImage imageNamed:fileName].CGImage;
     if (!spriteImage) {
         NSLog(@"Failed to load image %@", fileName);
@@ -527,6 +520,8 @@ enum {
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     
+    // glTexImage2D is a heavy call, this leads to higher memory usage as this is being called everytime an animal spawns, adding it to memory
+    // Should be offloaded and textures should be loaded in once on game launch and then re-used by OpenGL moving forward
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
     
     free(spriteData);
@@ -534,5 +529,3 @@ enum {
 }
 
 @end
-
-

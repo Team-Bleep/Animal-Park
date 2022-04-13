@@ -5,6 +5,7 @@
 //  Created by William Chan on 2022-03-26.
 //
 
+// Handles food depletion and re stock based on currency spent
 struct  FoodHandler {
     static let FoodCost = 2;
     static let MaxFood = 100;
@@ -28,13 +29,13 @@ struct  FoodHandler {
     }
     
     // returns true on successful removal
-    static func removeFood(fd: Int) -> Bool {
+    static func removeFood(fd: Int) -> Void {
         if (getFood() - fd) < 0 {
-            return false
+            return
         }
         UserDefaults.standard.set(UserDefaults.standard.integer(forKey:DefaultKeys.food)-fd, forKey: DefaultKeys.food)
         foodLeftText.text = FoodHandler.getFood().description + "% Food Remaining"
-        return true
+        return
     }
     
     static func setFood(fd: Int) {
