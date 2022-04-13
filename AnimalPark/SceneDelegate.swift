@@ -55,7 +55,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Despawn current animals depending on elapsed time
         
         if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
-            current.despawnAnimals();
+            //current.despawnAnimals();
             
             if (refreshData.elapsedTime <= spawnTime) {
                 return

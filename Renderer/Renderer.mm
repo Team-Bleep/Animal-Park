@@ -95,6 +95,7 @@ enum {
 @synthesize box2d;
 
 - (void)dealloc {
+    [self despawnAnimals];
     glDeleteProgram(programObject);
 }
 
@@ -359,8 +360,7 @@ enum {
         // movement
         float x = ((([box2d GetAnimalPositionX:i]-1)*(3-1))/(390 - 1)) + 1;
         float y = ((([box2d GetAnimalPositionY:i]-1)*(1.5f-(-1.5f)))/(750-1))-1.5f;
-        if (x != FLT_MAX && y != FLT_MAX) {
-            //objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, x, y, 0.000001);
+        if (x && x != FLT_MAX && y && y != FLT_MAX) {
             objects[i].mvp = GLKMatrix4TranslateWithVector3(objects[i].mvp, GLKVector3Make(x,y,0));
         }
     }
