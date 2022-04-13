@@ -28,9 +28,9 @@ class ViewController: GLKViewController {
     private var context: EAGLContext?
     public var glesRenderer: Renderer!
     private var rect: CGRect!
-    
-    private var spawned0 = false
-    private var spawned1 = false
+
+    @IBOutlet weak var tutorialButt: UIButton!
+    @IBOutlet weak var tutorialImage: UIImageView!
     
     private func setupGL() {
         context = EAGLContext(api: .openGLES3)
@@ -73,6 +73,11 @@ class ViewController: GLKViewController {
         // Do any additional setup after loading the view.
         refreshData.lastOpened = Int(Date().timeIntervalSinceReferenceDate)
         
+        // Tutorial Setup
+        tutorialButt.setImage(UIImage(systemName: "info.circle.fill"), for: .normal)
+        tutorialImage.isHidden = true;
+        
+        
         // Animal Coins Label
         dateLabelTest.frame = CGRect(x: 25, y: 0, width: 300, height: 100)
         dateLabelTest.textColor = UIColor.black
@@ -80,7 +85,7 @@ class ViewController: GLKViewController {
         self.view.addSubview(dateLabelTest)
         
         // Score Label
-        playerScoreLabel.frame = CGRect(x: 280, y: 0, width: 300, height: 100)
+        playerScoreLabel.frame = CGRect(x: 25, y: 50, width: 300, height: 100)
         playerScoreLabel.textColor = UIColor.black
         playerScoreLabel.font = UIFontMetrics.default.scaledFont(for: animalPawsFont).withSize(20)
         self.view.addSubview(playerScoreLabel)
@@ -119,6 +124,10 @@ class ViewController: GLKViewController {
         //    let names = UIFont.fontNames(forFamilyName: family)
         //    print("Family: \(family) Font names: \(names)")
         //}
+    }
+    
+    @IBAction func toggleTutorial() {
+        tutorialImage.isHidden = !tutorialImage.isHidden
     }
     
     @objc func refillFoodClicked(sender:UIButton!) {

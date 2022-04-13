@@ -79,6 +79,7 @@
 		EC00DAC527F4119B001C12E9 /* badger.png in Resources */ = {isa = PBXBuildFile; fileRef = EC00DAC327F4119B001C12E9 /* badger.png */; };
 		EC03822027F1311100475DB3 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC03821F27F1311100475DB3 /* MusicPlayer.swift */; };
 		EC0D2E1427F3A98600CAFFDC /* ScoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D2E1327F3A98600CAFFDC /* ScoreHandler.swift */; };
+		ECA0239728065FDB000A85A7 /* tutorial.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ECA0239628065FDB000A85A7 /* tutorial.jpg */; };
 		ECAB503127F2861F00A8C3E7 /* haru-ni-yosete.wav in Resources */ = {isa = PBXBuildFile; fileRef = ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */; };
 		ECAB503327F28A3F00A8C3E7 /* musical-beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */; };
 /* End PBXBuildFile section */
@@ -209,6 +210,7 @@
 		EC00DAC327F4119B001C12E9 /* badger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = badger.png; sourceTree = "<group>"; };
 		EC03821F27F1311100475DB3 /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
 		EC0D2E1327F3A98600CAFFDC /* ScoreHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreHandler.swift; sourceTree = "<group>"; };
+		ECA0239628065FDB000A85A7 /* tutorial.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tutorial.jpg; sourceTree = "<group>"; };
 		ECAB503027F2861F00A8C3E7 /* haru-ni-yosete.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "haru-ni-yosete.wav"; sourceTree = "<group>"; };
 		ECAB503227F28A3F00A8C3E7 /* musical-beep.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "musical-beep.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -455,6 +457,7 @@
 		D85876D727C1904D001E0FF6 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				ECA0239628065FDB000A85A7 /* tutorial.jpg */,
 				D58466692803AD09005F66DB /* pig.png */,
 				D58466672803AD04005F66DB /* anteater.png */,
 				EC00DAC327F4119B001C12E9 /* badger.png */,
@@ -567,6 +570,7 @@
 				D82C378B27AE4B5F00256AD9 /* Assets.xcassets in Resources */,
 				D82C378927AE4B5D00256AD9 /* Main.storyboard in Resources */,
 				D85876D927C1904D001E0FF6 /* parkbg.png in Resources */,
+				ECA0239728065FDB000A85A7 /* tutorial.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
