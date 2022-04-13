@@ -76,7 +76,7 @@ class ViewController: GLKViewController {
         // Tutorial Setup
         tutorialButt.setImage(UIImage(systemName: "info.circle.fill"), for: .normal)
         tutorialImage.isHidden = true;
-        
+        tutorialImage.layer.zPosition = 10;
         
         // Animal Coins Label
         dateLabelTest.frame = CGRect(x: 25, y: 0, width: 300, height: 100)
