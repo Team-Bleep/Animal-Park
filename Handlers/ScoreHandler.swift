@@ -7,8 +7,9 @@
 
 import Foundation
 
+// Handles Animal encounter score
 struct ScoreHandler {
-    static let baseScore = 5
+    static let baseScore = 1
     
     // Increase score once by base amount
     static func incrementScore() {

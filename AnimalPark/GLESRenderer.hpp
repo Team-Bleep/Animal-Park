@@ -20,9 +20,7 @@ public:
     
     int GenBackdrop(float scale, float **vertices, float **normals, float **texCoords, int **indices);
     
-    int GenAnimal(float scale, float **vertices, float **normals, float **texCoords, int **indices);
-    
-    int GenCube(float scale, float **vertices, float **normals,
+    int GenAnimal(float scale, float **vertices, float **normals,
                 float **texCoords, int **indices);
 };
 

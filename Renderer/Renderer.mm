@@ -8,36 +8,36 @@
 #include <chrono>
 #include "GLESRenderer.hpp"
 #include <stdlib.h>
+#include <Box2D/Box2D.h>
+#include <map>
 
-// small struct to hold object-specific information
-struct RenderObject
-{
+// Struct to hold object-specific information
+struct RenderObject {
     GLuint vao, ibo;    // VAO and index buffer object IDs
     GLuint animalTexture;
     
     int animalTextureIndex = -1;
     
-    // model-view, model-view-projection and normal matrices
+    // Model-view, model-view-projection and normal matrices
     GLKMatrix4 mvp, mvm;
     GLKMatrix3 normalMatrix;
 
-    // diffuse lighting parameters
+    // Diffuse lighting parameters
     GLKVector4 diffuseLightPosition;
     GLKVector4 diffuseComponent;
 
-    // vertex data
+    // Vertex data
     float *vertices, *normals, *texCoords;
     int *indices, numIndices;
     
     float animalSpawnPosX, animalSpawnPosY;
 };
 
-// macro to hep with GL calls
+// Macro to hep with GL calls
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-// uniform variables for shaders
-enum
-{
+// Uniform variables for shaders
+enum {
     UNIFORM_MODELVIEWPROJECTION_MATRIX,
     UNIFORM_MODELVIEW_MATRIX,
     UNIFORM_NORMAL_MATRIX,
@@ -51,11 +51,11 @@ enum
     UNIFORM_USE_TEXTURE,
     NUM_UNIFORMS
 };
+
 GLint uniforms[NUM_UNIFORMS];
 
-// vertex attributes
-enum
-{
+// Vertex attributes
+enum {
     ATTRIB_POSITION,
     ATTRIB_NORMAL,
     ATTRIB_TEXTURE,
@@ -72,72 +72,70 @@ enum
     GLuint backgroundTexture;
     NSString* animalTextures[4]; // PLS UPDATE ARRAY SIZE WITH OBJECTS ARRAY
 
-    // global lighting parameters
+    // Global lighting parameters
     GLKVector4 specularLightPosition;
     GLKVector4 specularComponent;
     GLfloat shininess;
     GLKVector4 ambientComponent;
     
-    // render objects
+    // Render objects
     RenderObject objects[4]; // PLS UPDATE ARRAY SIZE WITH ANIMAL TEXTURES ARRAY
     RenderObject nullObjects[4]; // PLS UPDATE SIZE WITH OBJECTS ARRAY
     RenderObject backdrop;
     
     int animalCount;
-    // moving camera automatically
-    float distx, disty, distIncr;
+    float distx, disty, distIncr; // Moving camera automatically
 }
 
 @end
 
 @implementation Renderer
 
-- (void)dealloc
-{
+//Synthesized values
+@synthesize box2d;
+
+- (void)dealloc {
+    [self despawnAnimals];
     glDeleteProgram(programObject);
 }
 
-- (void)loadBackdrop
-{
+- (void)loadBackdrop {
     
-    
-        // cube (centre, textured)
-        glGenVertexArrays(1, &backdrop.vao);
-        glGenBuffers(1, &backdrop.ibo);
+    // Cube (centre, textured)
+    glGenVertexArrays(1, &backdrop.vao);
+    glGenBuffers(1, &backdrop.ibo);
 
-        // get cube data
-       backdrop.numIndices = glesRenderer.GenCube(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
+    // Get cube data
+   backdrop.numIndices = glesRenderer.GenAnimal(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
 
-        // set up VBOs (one per attribute)
-        glBindVertexArray(backdrop.vao);
-        GLuint vbo[3];
-        glGenBuffers(3, vbo);
+    // Set up VBOs (one per attribute)
+    glBindVertexArray(backdrop.vao);
+    GLuint vbo[3];
+    glGenBuffers(3, vbo);
     
     backgroundTexture = [self setupTexture:@"parkbg.png"];
     glActiveTexture(GL_TEXTURE0);
-    
-    
 
-        // pass on position data
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.vertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ATTRIB_POSITION);
-        glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+    // Pass on position data
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.vertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(ATTRIB_POSITION);
+    glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-        // pass on normals
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.normals, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ATTRIB_NORMAL);
-        glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+    // pass on normals
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.normals, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(ATTRIB_NORMAL);
+    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-        // pass on texture coordinates
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-        glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), backdrop.texCoords, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ATTRIB_TEXTURE);
-        glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
+    // pass on texture coordinates
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), backdrop.texCoords, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(ATTRIB_TEXTURE);
+    glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backdrop.indices[0]) * backdrop.numIndices, backdrop.indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backdrop.indices[0]) * backdrop.numIndices, backdrop.indices, GL_STATIC_DRAW);
     
     // deselect the VAOs just to be clean
     glBindVertexArray(0);
@@ -149,41 +147,109 @@ enum
     }
 }
 
-- (void)loadAnimal:(int)animalCountx
-{
+// Load Animal textures Randomly
+- (void)loadAnimal:(int)animalCountx {
     distx = 0;
     disty = 0;
     animalCount = animalCountx;
     
-    
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
-        
-        
-        // TODO asign animal textures
-        
-        
-        
-        
         // cube (centre, textured)
         glGenVertexArrays(1, &objects[i].vao);
         glGenBuffers(1, &objects[i].ibo);
 
         // get cube data
-        objects[i].numIndices = glesRenderer.GenCube(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
+        objects[i].numIndices = glesRenderer.GenAnimal(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
-            
-            if (rand() % 2 == 0){
-                //animalTextures[i] = @"durgon.png";
+        // Randomized animal texture loaded
+        switch(arc4random_uniform(14)+1) {
+            case 1:
                 objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
                 glActiveTexture(GL_TEXTURE1);
                 objects[i].animalTextureIndex = 1;
-            } else {
-                //animalTextures[i] = @"badger.png";
-                objects[i].animalTexture = [self setupTexture:(@"badger.png")];
+                break;
+                
+            case 2:
+                objects[i].animalTexture = [self setupTexture:(@"durgon2.png")];
                 glActiveTexture(GL_TEXTURE2);
-                objects[i].animalTextureIndex = 2;
-            }
-        glActiveTexture(GL_TEXTURE1);
+                objects[i].animalTextureIndex = 3;
+                break;
+                
+            case 3:
+                objects[i].animalTexture = [self setupTexture:(@"durgon3.png")];
+                glActiveTexture(GL_TEXTURE3);
+                objects[i].animalTextureIndex = 3;
+                break;
+                
+            case 4:
+                objects[i].animalTexture = [self setupTexture:(@"badger.png")];
+                glActiveTexture(GL_TEXTURE4);
+                objects[i].animalTextureIndex = 4;
+                break;
+                
+            case 5:
+                objects[i].animalTexture = [self setupTexture:(@"badger2.png")];
+                glActiveTexture(GL_TEXTURE5);
+                objects[i].animalTextureIndex = 5;
+                break;
+                
+            case 6:
+                objects[i].animalTexture = [self setupTexture:(@"badger3.png")];
+                glActiveTexture(GL_TEXTURE6);
+                objects[i].animalTextureIndex = 6;
+                break;
+                
+            case 7:
+                objects[i].animalTexture = [self setupTexture:(@"pig.png")];
+                glActiveTexture(GL_TEXTURE7);
+                objects[i].animalTextureIndex = 7;
+                break;
+                
+            case 8:
+                
+                objects[i].animalTexture = [self setupTexture:(@"pig2.png")];
+                glActiveTexture(GL_TEXTURE8);
+                objects[i].animalTextureIndex = 8;
+                break;
+                
+            case 9:
+                objects[i].animalTexture = [self setupTexture:(@"pig3.png")];
+                glActiveTexture(GL_TEXTURE9);
+                objects[i].animalTextureIndex = 9;
+                break;
+                
+            case 10:
+                objects[i].animalTexture = [self setupTexture:(@"sheep.png")];
+                glActiveTexture(GL_TEXTURE10);
+                objects[i].animalTextureIndex = 10;
+                break;
+                
+            case 11:
+                objects[i].animalTexture = [self setupTexture:(@"sheep2.png")];
+                glActiveTexture(GL_TEXTURE11);
+                objects[i].animalTextureIndex = 11;
+                break;
+                
+            case 12:
+                objects[i].animalTexture = [self setupTexture:(@"sheep3.png")];
+                glActiveTexture(GL_TEXTURE12);
+                objects[i].animalTextureIndex = 12;
+                break;
+                
+            case 13:
+                objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
+                glActiveTexture(GL_TEXTURE13);
+                objects[i].animalTextureIndex = 13;
+                break;
+                
+            default:
+                objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
+                glActiveTexture(GL_TEXTURE13);
+                objects[i].animalTextureIndex = 13;
+                break;
+                
+        }
+        
         glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
         
@@ -220,8 +286,8 @@ enum
     glBindVertexArray(0);
 }
 
-- (void)setup:(GLKView *)view
-{
+// Initialize EAGLContext, Lighting and Box2D
+- (void)setup:(GLKView *)view {
     view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     
     if (!view.context) {
@@ -234,10 +300,8 @@ enum
     if (![self setupShaders])
         return;
     
-   
-    
-    
-    
+    // Initialize Box2D
+    box2d = [[CBox2D alloc] init];
     
     // set up lighting values
     specularComponent = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
@@ -256,8 +320,6 @@ enum
     
     // Set background/sky colour
     glClearColor(0.5764f, 0.74509f, 0.929411f, 1.0f);
-    //glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
     lastTime = std::chrono::steady_clock::now();
     
     distx = 0.0;
@@ -265,10 +327,12 @@ enum
     distIncr = 0.05f;
 }
 
-- (void)update
-{
-    
-    //ambientComponent = GLKVector4Make(0.16f, 0.48f, 0.6f, 1.0f);
+- (void)update {
+    // Calculate elapsed time and update Box2D
+    auto currentTime = std::chrono::steady_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
+    lastTime = currentTime;
+    [box2d Update:elapsedTime/1000.0f];
     
     // make specular light move with camera
     specularLightPosition = GLKVector4Make(0.0, 0.0f, -15.0f, 1.0f);
@@ -277,10 +341,6 @@ enum
     float shininessFlashOff = 200.0;
     shininess = shininessFlashOff;
     specularComponent = specComponentFlashOff;
-    
-    // perspective projection matrix
-    float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
-    //GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
     
     GLKMatrix4 perspective = GLKMatrix4MakeOrtho(-1.5f,1.5f, -3, 3,1,10);
     
@@ -293,40 +353,22 @@ enum
 
     for(int i = 0; i < animalCount; i = i+1) {
         objects[i].mvp = GLKMatrix4Scale(GLKMatrix4Translate(GLKMatrix4Identity, -2.0, 0.0, -5.0 - i/10),1.0,1.0,0.000001);
-        //objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, i, -0.5, 0), objects[i].mvp);
-        // xrand: 1 to 3
-        // yrand: -1.5 to 1.5
-        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, objects[i].animalSpawnPosX, objects[i].animalSpawnPosY, 0), objects[i].mvp);
+        objects[i].mvm = objects[i].mvp = GLKMatrix4Multiply(GLKMatrix4Translate(GLKMatrix4Identity, 0, 0, 0), objects[i].mvp);
         objects[i].normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(objects[i].mvp), NULL);
         objects[i].mvp = GLKMatrix4Multiply(perspective, objects[i].mvp);
-    }
-    
-    /// Movement section
-    // add random selection of direction to move each cube (4 values, one per cube)
-    // - Up (y), down (-y), left (-x), right (x)
-    // check for bounds (edges of walls -- don't add if value is more than specified edges)
-
-    for(int i = 0; i < animalCount; i = i+1) {
-        int rand = arc4random_uniform(4);
-        switch(rand) {
-            case 0:
-                disty = disty + distIncr;
-                break;
-            case 1:
-                disty = disty - distIncr;
-                break;
-            case 2:
-                distx = distx + distIncr;
-                break;
-            case 3:
-                distx = distx - distIncr;
+        
+        // movement
+        float x = ((([box2d GetAnimalPositionX:i]-1)*(3-1))/(390 - 1)) + 1;
+        float y = ((([box2d GetAnimalPositionY:i]-1)*(1.5f-(-1.5f)))/(750-1))-1.5f;
+        if (x && x != FLT_MAX && y && y != FLT_MAX) {
+            objects[i].mvp = GLKMatrix4TranslateWithVector3(objects[i].mvp, GLKVector3Make(x,y,0));
         }
-        objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, distx, disty, 0);
     }
+
 }
 
-- (void)draw:(CGRect)drawRect;
-{
+// Draw using OpenGL
+- (void)draw:(CGRect)drawRect; {
     // pass on global lighting, fog and texture values
     
     glUniform4fv(uniforms[UNIFORM_LIGHT_SPECULAR_POSITION], 1, specularLightPosition.v);
@@ -365,14 +407,65 @@ enum
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 1);
                 break;
-                
             case 2:
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 2);
                 break;
-                
+            case 3:
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 3);
+                break;
+            case 4:
+                glActiveTexture(GL_TEXTURE5);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 5);
+                break;
+            case 6:
+                glActiveTexture(GL_TEXTURE6);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 6);
+                break;
+            case 7:
+                glActiveTexture(GL_TEXTURE7);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 7);
+                break;
+            case 8:
+                glActiveTexture(GL_TEXTURE8);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 8);
+                break;
+            case 9:
+                glActiveTexture(GL_TEXTURE9);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 9);
+                break;
+            case 10:
+                glActiveTexture(GL_TEXTURE10);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 10);
+                break;
+            case 11:
+                glActiveTexture(GL_TEXTURE11);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 11);
+                break;
+            case 12:
+                glActiveTexture(GL_TEXTURE12);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 12);
+                break;
+            case 13:
+                glActiveTexture(GL_TEXTURE13);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 13);
+                break;
             default:
+                glActiveTexture(GL_TEXTURE13);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 13);
                 break;
         }
         
@@ -389,10 +482,8 @@ enum
     }
 }
 
-
-- (bool)setupShaders
-{
-    // Load shaders
+// Setup shaders OpenGL program objects
+- (bool)setupShaders {
     char *vShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"VertexShader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"VertexShader.vsh"] pathExtension]] cStringUsingEncoding:1]);
     char *fShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"FragmentShader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"FragmentShader.fsh"] pathExtension]] cStringUsingEncoding:1]);
     programObject = glesRenderer.LoadProgram(vShaderStr, fShaderStr);
@@ -416,8 +507,7 @@ enum
 
 
 // Load in and set up texture image (adapted from Ray Wenderlich)
-- (GLuint)setupTexture:(NSString *)fileName
-{
+- (GLuint)setupTexture:(NSString *)fileName {
     CGImageRef spriteImage = [UIImage imageNamed:fileName].CGImage;
     if (!spriteImage) {
         NSLog(@"Failed to load image %@", fileName);
@@ -441,6 +531,8 @@ enum
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     
+    // glTexImage2D is a heavy call, this leads to higher memory usage as this is being called everytime an animal spawns, adding it to memory
+    // Should be offloaded and textures should be loaded in once on game launch and then re-used by OpenGL moving forward
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
     
     free(spriteData);
@@ -448,5 +540,3 @@ enum
 }
 
 @end
-
-

@@ -29,30 +29,33 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive
-        calculateElapsedTime()
+        calculateElapsedTime() // Calculate time passed
         
-        // TEMP FOR TESTING: currency booster
-        //CurrencyHandler.addCurrency(curr: refreshData.elapsedTime/10 * CurrencyHandler.TimeCurrencyMultiplier)
-        CurrencyHandler.addCurrency(curr: refreshData.elapsedTime)
+        CurrencyHandler.addCurrency(curr: refreshData.elapsedTime) // Add currency based on time passed
         
+        // Update the UI, spawn animals and decrease food
         dateLabelTest.text = CurrencyHandler.getCurrency().description + " Animal Coins"
         foodLeftText.text = FoodHandler.getFood().description + "% Food Remaining"
         spawnAnimals()
         decreaseFood()
-        playerScoreLabel.text = ScoreHandler.getScore().description + " Points"
+        
+        // Increase Animal encounter value
+        playerScoreLabel.text = ScoreHandler.getScore().description + " Animals Encountered"
     }
     
+    // Decrease available food
     func decreaseFood() {
         let decreaseTime = 5 // amount of time it takes for 1% food depletion
         FoodHandler.removeFood(fd: refreshData.elapsedTime/decreaseTime)
     }
     
+    // Spawn animals functions
     func spawnAnimals() {
-        let spawnTime = 3 // time it takes for animal to spawn
-        // despawn current animals depending on elapsed time
+        let spawnTime = 2 // ime it takes for animal to spawn
+        // Despawn current animals depending on elapsed time
         
         if let current = UIApplication.shared.keyWindow?.rootViewController as? ViewController {
-            current.despawnAnimals();
+            //current.despawnAnimals();
             
             if (refreshData.elapsedTime <= spawnTime) {
                 return
@@ -62,11 +65,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 return
             }
             
+            // Call createAnimals functions in ViewController and play music queue
             current.createAnimals(numAnim: Int(refreshData.elapsedTime/spawnTime))
             MusicPlayer.Instance.playSfx(sfx: "musical-beep", ext: "wav")
         }
     }
 
+    // Calculates time passed since last opened
     func calculateElapsedTime() {
         refreshData.elapsedTime = Int(Date().timeIntervalSinceReferenceDate) - refreshData.lastOpened
     }

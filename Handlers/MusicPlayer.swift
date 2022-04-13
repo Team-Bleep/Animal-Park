@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 
+// Handles SFX and BGM
 class MusicPlayer {
     static let Instance = MusicPlayer() // Singleton Instance
     private var audioPlayer: AVAudioPlayer?
