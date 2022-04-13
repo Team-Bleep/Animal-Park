@@ -11,35 +11,33 @@
 #include <Box2D/Box2D.h>
 #include <map>
 
-// small struct to hold object-specific information
-struct RenderObject
-{
+// Struct to hold object-specific information
+struct RenderObject {
     GLuint vao, ibo;    // VAO and index buffer object IDs
     GLuint animalTexture;
     
     int animalTextureIndex = -1;
     
-    // model-view, model-view-projection and normal matrices
+    // Model-view, model-view-projection and normal matrices
     GLKMatrix4 mvp, mvm;
     GLKMatrix3 normalMatrix;
 
-    // diffuse lighting parameters
+    // Diffuse lighting parameters
     GLKVector4 diffuseLightPosition;
     GLKVector4 diffuseComponent;
 
-    // vertex data
+    // Vertex data
     float *vertices, *normals, *texCoords;
     int *indices, numIndices;
     
     float animalSpawnPosX, animalSpawnPosY;
 };
 
-// macro to hep with GL calls
+// Macro to hep with GL calls
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-// uniform variables for shaders
-enum
-{
+// Uniform variables for shaders
+enum {
     UNIFORM_MODELVIEWPROJECTION_MATRIX,
     UNIFORM_MODELVIEW_MATRIX,
     UNIFORM_NORMAL_MATRIX,
@@ -53,11 +51,11 @@ enum
     UNIFORM_USE_TEXTURE,
     NUM_UNIFORMS
 };
+
 GLint uniforms[NUM_UNIFORMS];
 
-// vertex attributes
-enum
-{
+// Vertex attributes
+enum {
     ATTRIB_POSITION,
     ATTRIB_NORMAL,
     ATTRIB_TEXTURE,
@@ -74,74 +72,69 @@ enum
     GLuint backgroundTexture;
     NSString* animalTextures[4]; // PLS UPDATE ARRAY SIZE WITH OBJECTS ARRAY
 
-    // global lighting parameters
+    // Global lighting parameters
     GLKVector4 specularLightPosition;
     GLKVector4 specularComponent;
     GLfloat shininess;
     GLKVector4 ambientComponent;
     
-    // render objects
+    // Render objects
     RenderObject objects[4]; // PLS UPDATE ARRAY SIZE WITH ANIMAL TEXTURES ARRAY
     RenderObject nullObjects[4]; // PLS UPDATE SIZE WITH OBJECTS ARRAY
     RenderObject backdrop;
     
     int animalCount;
-    // moving camera automatically
-    float distx, disty, distIncr;
+    float distx, disty, distIncr; // Moving camera automatically
 }
 
 @end
 
 @implementation Renderer
 
+//Synthesized values
 @synthesize box2d;
 
-- (void)dealloc
-{
+- (void)dealloc {
     glDeleteProgram(programObject);
 }
 
-- (void)loadBackdrop
-{
+- (void)loadBackdrop {
     
-    
-        // cube (centre, textured)
-        glGenVertexArrays(1, &backdrop.vao);
-        glGenBuffers(1, &backdrop.ibo);
+    // Cube (centre, textured)
+    glGenVertexArrays(1, &backdrop.vao);
+    glGenBuffers(1, &backdrop.ibo);
 
-        // get cube data
-       backdrop.numIndices = glesRenderer.GenAnimal(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
+    // Get cube data
+   backdrop.numIndices = glesRenderer.GenAnimal(1.0f, &backdrop.vertices, &backdrop.normals, &backdrop.texCoords, &backdrop.indices);
 
-        // set up VBOs (one per attribute)
-        glBindVertexArray(backdrop.vao);
-        GLuint vbo[3];
-        glGenBuffers(3, vbo);
+    // Set up VBOs (one per attribute)
+    glBindVertexArray(backdrop.vao);
+    GLuint vbo[3];
+    glGenBuffers(3, vbo);
     
     backgroundTexture = [self setupTexture:@"parkbg.png"];
     glActiveTexture(GL_TEXTURE0);
-    
-    
 
-        // pass on position data
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.vertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ATTRIB_POSITION);
-        glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+    // Pass on position data
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.vertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(ATTRIB_POSITION);
+    glVertexAttribPointer(ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-        // pass on normals
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.normals, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ATTRIB_NORMAL);
-        glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
+    // pass on normals
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, 3*24*sizeof(GLfloat), backdrop.normals, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(ATTRIB_NORMAL);
+    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-        // pass on texture coordinates
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-        glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), backdrop.texCoords, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ATTRIB_TEXTURE);
-        glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
+    // pass on texture coordinates
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, 2*24*sizeof(GLfloat), backdrop.texCoords, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(ATTRIB_TEXTURE);
+    glVertexAttribPointer(ATTRIB_TEXTURE, 3, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backdrop.indices[0]) * backdrop.numIndices, backdrop.indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backdrop.ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backdrop.indices[0]) * backdrop.numIndices, backdrop.indices, GL_STATIC_DRAW);
     
     // deselect the VAOs just to be clean
     glBindVertexArray(0);
@@ -153,12 +146,10 @@ enum
     }
 }
 
-- (void)loadAnimal:(int)animalCountx
-{
+- (void)loadAnimal:(int)animalCountx {
     distx = 0;
     disty = 0;
     animalCount = animalCountx;
-    
     
     for(int i = 0; i < sizeof(objects)/sizeof(objects[0]); i = i+1) {
         // cube (centre, textured)
