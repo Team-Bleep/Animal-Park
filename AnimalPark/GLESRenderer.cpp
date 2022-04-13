@@ -12,8 +12,8 @@
 #include <iostream>
 #include "GLESRenderer.hpp"
 
+// Open and read Shader file source. Returns contents of shader file
 char *GLESRenderer::LoadShaderFile(const char *shaderFileName) {
-    // This is for Loading Shader Files
     FILE *fp = fopen(shaderFileName, "rb");
     if(fp == NULL)
         return NULL;
@@ -38,6 +38,7 @@ char *GLESRenderer::LoadShaderFile(const char *shaderFileName) {
     return buf;
 }
 
+// Compile shaders for OpenGL program
 GLuint GLESRenderer::LoadShader(GLenum type, const char *shaderSrc) {
     //LoadShader
     GLuint shader = glCreateShader(type);
@@ -67,20 +68,21 @@ GLuint GLESRenderer::LoadShader(GLenum type, const char *shaderSrc) {
     return shader;
 }
 
-GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShaderSrc){
+// Setup and Load the OpenGL program after reading both vertex and fragment Shaders
+GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShaderSrc) {
     GLuint vertexShader = LoadShader(GL_VERTEX_SHADER, vertShaderSrc);
-    if(vertexShader == 0)
+    if (vertexShader == 0)
         return 0;
     
     GLuint fragmentShader = LoadShader(GL_FRAGMENT_SHADER, fragShaderSrc);
-    if(fragmentShader == 0){
+    if (fragmentShader == 0) {
         glDeleteShader(vertexShader);
         return 0;
     }
     
     
     GLuint programObject = glCreateProgram();
-    if(programObject == 0){
+    if (programObject == 0) {
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
         return 0;
@@ -93,10 +95,10 @@ GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShad
     GLint linked;
     
     glGetProgramiv(programObject, GL_LINK_STATUS, &linked);
-    if(!linked){
+    if (!linked) {
         GLint infoLen = 0;
         glGetProgramiv(programObject, GL_INFO_LOG_LENGTH, &infoLen);
-        if(infoLen > 1){
+        if (infoLen > 1) {
             char *infoLog = (char *)malloc(sizeof(char) *infoLen);
             glGetProgramInfoLog(programObject, infoLen, NULL, infoLog);
             std::cerr << "**SHADER LINK ERROR:" << std::endl;
@@ -113,7 +115,8 @@ GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShad
     return programObject;
 }
 
-int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, float **texCoords, int **indices){
+// Generate square information for Backdrop w/ textures
+int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, float **texCoords, int **indices) {
     //Generate backdrop
     int i;
     int numVertices = 4;
@@ -142,7 +145,7 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
    
     
     // Memory for buffers - VERTICES
-    if(vertices!=NULL){
+    if (vertices!=NULL) {
         *vertices = (float *) malloc(sizeof(float) * 3 * numVertices);
         memcpy(*vertices, squareVerts, sizeof(squareVerts));
         
@@ -152,7 +155,7 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     }
     
     // Memory for buffers - NORMALS
-    if(normals!=NULL){
+    if (normals!=NULL) {
         *normals = (float *) malloc(sizeof(float) * 3 * numVertices);
         memcpy(*normals, squareNormals, sizeof(squareNormals));
     }
@@ -164,7 +167,7 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     }
     
     // Memory for buffers - INDICES + Generation of indices
-    if(indices!=NULL){
+    if (indices!=NULL) {
         GLuint squareIndices[] = {
             0,1,2,
             1,3,2
@@ -177,79 +180,13 @@ int GLESRenderer::GenBackdrop(float scale, float **vertices, float **normals, fl
     return numIndices;
 }
 
-int GLESRenderer::GenAnimal(float scale, float **vertices, float **normals, float **texCoords, int **indices){
-    
-    int i;
-    int numVertices = 4;
-    int numIndices = 6;
-    
-    float squareVerts[] = {
-        0.5f, 0.5f, 3.0f,  //Bottom Left
-        0.5f, 0.25f,  3.0f,  //Top Left
-        0.25f, 0.5f,  3.0f, //Bottom Right
-        0.25f, 0.25f,  3.0f,  //Top Right
-    };
-    
-    float squareNormals[] = {
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-    };
-    
-    float squareTex[] = {
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0,
-    };
-    
-    // Memory for buffers - VERTICES
-    if(vertices!=NULL){
-        *vertices = (float *) malloc(sizeof(float) * 3 * numVertices);
-        memcpy(*vertices, squareVerts, sizeof(squareVerts));
-        
-        for(i = 0; i < numVertices * 3; i++){
-            (*vertices) [i] *= scale;
-        }
-    }
-    
-    // Memory for buffers - NORMALS
-    if(normals!=NULL){
-        *normals = (float *) malloc(sizeof(float) * 3 * numVertices);
-        memcpy(*normals, squareNormals, sizeof(squareNormals));
-    }
-    
-    if ( texCoords != NULL )
-    {
-        *texCoords = (float *)malloc ( sizeof ( float ) * 2 * numVertices );
-        memcpy ( *texCoords, squareTex, sizeof ( squareTex ) ) ;
-    }
-
-    
-    // Memory for buffers - INDICES + Generation of indices
-    if(indices!=NULL){
-        GLuint squareIndices[] = {
-            0,1,2,
-            1,3,2
-        };
-        
-        *indices = (int *) malloc(sizeof(int) * numIndices);
-        memcpy(*indices, squareIndices, sizeof(squareIndices));
-    }
-    
-    return numIndices;
-};
-
-int GLESRenderer::GenCube(float scale, float **vertices, float **normals,
-                          float **texCoords, int **indices)
-{
+// Generate a 3D cube for animals w/ texture
+int GLESRenderer::GenAnimal(float scale, float **vertices, float **normals, float **texCoords, int **indices) {
     int i;
     int numVertices = 24;
     int numIndices = 36;
     
-    float cubeVerts[] =
-    {
+    float cubeVerts[] = {
         -0.5f, -0.5f, -0.5f,
         -0.5f, -0.5f,  0.5f,
         0.5f, -0.5f,  0.5f,
@@ -276,8 +213,7 @@ int GLESRenderer::GenCube(float scale, float **vertices, float **normals,
         0.5f,  0.5f, -0.5f,
     };
     
-    float cubeNormals[] =
-    {
+    float cubeNormals[] = {
         0.0f, -1.0f, 0.0f,
         0.0f, -1.0f, 0.0f,
         0.0f, -1.0f, 0.0f,
@@ -304,8 +240,7 @@ int GLESRenderer::GenCube(float scale, float **vertices, float **normals,
         1.0f, 0.0f, 0.0f,
     };
     
-    float cubeTex[] =
-    {
+    float cubeTex[] = {
         0.0f, 0.0f,
         0.0f, 1.0f,
         1.0f, 1.0f,
@@ -333,35 +268,29 @@ int GLESRenderer::GenCube(float scale, float **vertices, float **normals,
     };
     
     // Allocate memory for buffers
-    if ( vertices != NULL )
-    {
-        *vertices = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
-        memcpy ( *vertices, cubeVerts, sizeof ( cubeVerts ) );
+    if (vertices != NULL) {
+        *vertices = (float *)malloc (sizeof (float) * 3 * numVertices);
+        memcpy (*vertices, cubeVerts, sizeof (cubeVerts));
         
-        for ( i = 0; i < numVertices * 3; i++ )
-        {
-            ( *vertices ) [i] *= scale;
+        for (i = 0; i < numVertices * 3; i++) {
+            (*vertices) [i] *= scale;
         }
     }
     
-    if ( normals != NULL )
-    {
-        *normals = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
-        memcpy ( *normals, cubeNormals, sizeof ( cubeNormals ) );
+    if (normals != NULL) {
+        *normals = (float *)malloc (sizeof(float) * 3 * numVertices);
+        memcpy (*normals, cubeNormals, sizeof ( cubeNormals));
     }
     
-    if ( texCoords != NULL )
-    {
-        *texCoords = (float *)malloc ( sizeof ( float ) * 2 * numVertices );
-        memcpy ( *texCoords, cubeTex, sizeof ( cubeTex ) ) ;
+    if (texCoords != NULL) {
+        *texCoords = (float *)malloc (sizeof(float) * 2 * numVertices);
+        memcpy (*texCoords, cubeTex, sizeof (cubeTex ));
     }
     
     
     // Generate the indices
-    if ( indices != NULL )
-    {
-        GLuint cubeIndices[] =
-        {
+    if (indices != NULL) {
+        GLuint cubeIndices[] = {
             0, 2, 1,
             0, 3, 2,
             4, 5, 6,
@@ -376,8 +305,8 @@ int GLESRenderer::GenCube(float scale, float **vertices, float **normals,
             20, 22, 21
         };
         
-        *indices = (int *)malloc ( sizeof ( int ) * numIndices );
-        memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
+        *indices = (int *)malloc (sizeof (int) * numIndices);
+        memcpy (*indices, cubeIndices, sizeof (cubeIndices));
     }
     
     return numIndices;

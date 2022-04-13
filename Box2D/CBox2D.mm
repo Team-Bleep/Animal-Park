@@ -27,18 +27,11 @@ public:
         contact->GetWorldManifold(&worldManifold);
         b2PointState state1[2], state2[2];
         b2GetPointStates(state1, state2, oldManifold, contact->GetManifold());
-        if (state2[0] == b2_addState)
-        {
+        if (state2[0] == b2_addState) {
             // Use contact->GetFixtureA()->GetBody() to get the body
             b2Body* bodyA = contact->GetFixtureA()->GetBody();
             // Call RegisterHit (assume CBox2D object is in user data)
             CBox2D *parentObj = (__bridge CBox2D *)(bodyA->GetUserData());
-            //if (bodyA->GetLinearVelocity().y == 0) {
-              //  float x = bodyA->GetPosition().x;
-                //float y = bodyA->GetPosition().y;
-                //[parentObj RegisterHit:x Ex: y]; // uses RegisterHit function as a callback
-            //}
-            
         }
     }
     void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {};
@@ -69,8 +62,7 @@ public:
 
 @synthesize numAnimals;
 
-- (instancetype)init
-{
+- (instancetype)init {
     
     self = [super init];
     if (self) {
@@ -207,15 +199,13 @@ public:
     return self;
 }
 
--(void)dealloc
-{
+-(void)dealloc {
     if (gravity) delete gravity;
     if (world) delete world;
     if (contactListener) delete contactListener;
 }
 
--(void)Update:(float)elapsedTime
-{
+-(void)Update:(float)elapsedTime {
     
     if (movementStarted) {
         
@@ -231,22 +221,19 @@ public:
     totalElapsedTime += elapsedTime;
     
 
-    if (world)
-    {
-        while (elapsedTime >= MAX_TIMESTEP)
-        {
+    if (world) {
+        while (elapsedTime >= MAX_TIMESTEP) {
             world->Step(MAX_TIMESTEP, NUM_VEL_ITERATIONS, NUM_POS_ITERATIONS);
             elapsedTime -= MAX_TIMESTEP;
         }
         
-        if (elapsedTime > 0.0f)
-        {
+        if (elapsedTime > 0.0f) {
             world->Step(elapsedTime, NUM_VEL_ITERATIONS, NUM_POS_ITERATIONS);
         }
     }
 }
 
--(bool) RegisterTap:(float)posX Ex:(float)posY {
+-(bool)RegisterTap:(float)posX Ex:(float)posY {
     float padding = 100.0;
     for (int i = 0; i < numAnimals; i++) {
         if (animal[i]) {
@@ -267,8 +254,7 @@ public:
     return false;
 }
 
--(float)GetAnimalPositionX:(int)index
-{
+-(float)GetAnimalPositionX:(int)index {
     if (animal[index]) {
         return animal[index]->GetPosition().x;
         
@@ -276,8 +262,7 @@ public:
     return FLT_MAX; // no animal found
 }
 
--(float)GetAnimalPositionY:(int)index
-{
+-(float)GetAnimalPositionY:(int)index {
     if (animal[index]) {
         return animal[index]->GetPosition().y;
     }

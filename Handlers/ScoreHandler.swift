@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Handles Animal encounter score
 struct ScoreHandler {
     static let baseScore = 1
     
