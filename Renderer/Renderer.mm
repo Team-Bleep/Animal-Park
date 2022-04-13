@@ -174,21 +174,80 @@ enum
                 glActiveTexture(GL_TEXTURE1);
                 objects[i].animalTextureIndex = 1;
                 break;
+                
             case 2:
-                objects[i].animalTexture = [self setupTexture:(@"badger.png")];
+                objects[i].animalTexture = [self setupTexture:(@"durgon2.png")];
                 glActiveTexture(GL_TEXTURE2);
-                objects[i].animalTextureIndex = 2;
+                objects[i].animalTextureIndex = 3;
                 break;
+                
             case 3:
-                objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
+                objects[i].animalTexture = [self setupTexture:(@"durgon3.png")];
                 glActiveTexture(GL_TEXTURE3);
                 objects[i].animalTextureIndex = 3;
                 break;
+                
             case 4:
-                objects[i].animalTexture = [self setupTexture:(@"pig.png")];
+                objects[i].animalTexture = [self setupTexture:(@"badger.png")];
                 glActiveTexture(GL_TEXTURE4);
                 objects[i].animalTextureIndex = 4;
                 break;
+                
+            case 5:
+                objects[i].animalTexture = [self setupTexture:(@"badger2.png")];
+                glActiveTexture(GL_TEXTURE5);
+                objects[i].animalTextureIndex = 5;
+                break;
+                
+            case 6:
+                objects[i].animalTexture = [self setupTexture:(@"badger3.png")];
+                glActiveTexture(GL_TEXTURE6);
+                objects[i].animalTextureIndex = 6;
+                break;
+                
+            case 7:
+                objects[i].animalTexture = [self setupTexture:(@"pig.png")];
+                glActiveTexture(GL_TEXTURE7);
+                objects[i].animalTextureIndex = 7;
+                break;
+                
+            case 8:
+                
+                objects[i].animalTexture = [self setupTexture:(@"pig2.png")];
+                glActiveTexture(GL_TEXTURE8);
+                objects[i].animalTextureIndex = 8;
+                break;
+                
+            case 9:
+                objects[i].animalTexture = [self setupTexture:(@"pig3.png")];
+                glActiveTexture(GL_TEXTURE9);
+                objects[i].animalTextureIndex = 9;
+                break;
+                
+            case 10:
+                objects[i].animalTexture = [self setupTexture:(@"sheep.png")];
+                glActiveTexture(GL_TEXTURE10);
+                objects[i].animalTextureIndex = 10;
+                break;
+                
+            case 11:
+                objects[i].animalTexture = [self setupTexture:(@"sheep2.png")];
+                glActiveTexture(GL_TEXTURE11);
+                objects[i].animalTextureIndex = 11;
+                break;
+                
+            case 12:
+                objects[i].animalTexture = [self setupTexture:(@"sheep3.png")];
+                glActiveTexture(GL_TEXTURE12);
+                objects[i].animalTextureIndex = 12;
+                break;
+                
+            case 13:
+                objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
+                glActiveTexture(GL_TEXTURE13);
+                objects[i].animalTextureIndex = 13;
+                break;
+                
         }
         
         glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
@@ -366,12 +425,49 @@ enum
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 3);
                 break;
             case 4:
-                glActiveTexture(GL_TEXTURE4);
+                glActiveTexture(GL_TEXTURE5);
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
-                glUniform1i(uniforms[UNIFORM_TEXTURE], 4);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 5);
                 break;
-                
-            default:
+            case 6:
+                glActiveTexture(GL_TEXTURE6);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 6);
+                break;
+            case 7:
+                glActiveTexture(GL_TEXTURE7);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 7);
+                break;
+            case 8:
+                glActiveTexture(GL_TEXTURE8);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 8);
+                break;
+            case 9:
+                glActiveTexture(GL_TEXTURE9);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 9);
+                break;
+            case 10:
+                glActiveTexture(GL_TEXTURE10);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 10);
+                break;
+            case 11:
+                glActiveTexture(GL_TEXTURE11);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 11);
+                break;
+            case 12:
+                glActiveTexture(GL_TEXTURE12);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 12);
+                break;
+            case 13:
+                glActiveTexture(GL_TEXTURE13);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 13);
                 break;
         }
         

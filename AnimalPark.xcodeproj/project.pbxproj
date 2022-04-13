@@ -7,12 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		558D2AAE27F2E81D0003DC2B /* crate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 558D2AAC27F2E81D0003DC2B /* crate.jpg */; };
-		558D2AAF27F2E81D0003DC2B /* map.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 558D2AAD27F2E81D0003DC2B /* map.jpg */; };
 		7944D33A27C61CC200CA1A56 /* Animal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33927C61CC200CA1A56 /* Animal.swift */; };
 		7944D33C27C6395500CA1A56 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33B27C6395500CA1A56 /* Store.swift */; };
 		7944D33E27C644B300CA1A56 /* Toy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7944D33D27C644B300CA1A56 /* Toy.swift */; };
 		79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */; };
+		D52E69392806861500154416 /* pig3.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69302806861500154416 /* pig3.png */; };
+		D52E693A2806861500154416 /* sheep.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69312806861500154416 /* sheep.png */; };
+		D52E693B2806861500154416 /* durgon3.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69322806861500154416 /* durgon3.png */; };
+		D52E693C2806861500154416 /* sheep3.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69332806861500154416 /* sheep3.png */; };
+		D52E693D2806861500154416 /* pig2.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69342806861500154416 /* pig2.png */; };
+		D52E693E2806861500154416 /* badger3.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69352806861500154416 /* badger3.png */; };
+		D52E693F2806861500154416 /* sheep2.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69362806861500154416 /* sheep2.png */; };
+		D52E69402806861500154416 /* badger2.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69372806861500154416 /* badger2.png */; };
+		D52E69412806861500154416 /* durgon2.png in Resources */ = {isa = PBXBuildFile; fileRef = D52E69382806861500154416 /* durgon2.png */; };
 		D57D1F102806581400BF0A9E /* boop.wav in Resources */ = {isa = PBXBuildFile; fileRef = D57D1F0F2806581400BF0A9E /* boop.wav */; };
 		D58466682803AD04005F66DB /* anteater.png in Resources */ = {isa = PBXBuildFile; fileRef = D58466672803AD04005F66DB /* anteater.png */; };
 		D584666A2803AD09005F66DB /* pig.png in Resources */ = {isa = PBXBuildFile; fileRef = D58466692803AD09005F66DB /* pig.png */; };
@@ -86,12 +93,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		558D2AAC27F2E81D0003DC2B /* crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crate.jpg; sourceTree = "<group>"; };
-		558D2AAD27F2E81D0003DC2B /* map.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = map.jpg; sourceTree = "<group>"; };
 		7944D33927C61CC200CA1A56 /* Animal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animal.swift; sourceTree = "<group>"; };
 		7944D33B27C6395500CA1A56 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		7944D33D27C644B300CA1A56 /* Toy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toy.swift; sourceTree = "<group>"; };
 		79AEC36927F3BEA300114AD3 /* Animal Paws.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Animal Paws.ttf"; sourceTree = "<group>"; };
+		D52E69302806861500154416 /* pig3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pig3.png; sourceTree = "<group>"; };
+		D52E69312806861500154416 /* sheep.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sheep.png; sourceTree = "<group>"; };
+		D52E69322806861500154416 /* durgon3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = durgon3.png; sourceTree = "<group>"; };
+		D52E69332806861500154416 /* sheep3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sheep3.png; sourceTree = "<group>"; };
+		D52E69342806861500154416 /* pig2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pig2.png; sourceTree = "<group>"; };
+		D52E69352806861500154416 /* badger3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = badger3.png; sourceTree = "<group>"; };
+		D52E69362806861500154416 /* sheep2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sheep2.png; sourceTree = "<group>"; };
+		D52E69372806861500154416 /* badger2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = badger2.png; sourceTree = "<group>"; };
+		D52E69382806861500154416 /* durgon2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = durgon2.png; sourceTree = "<group>"; };
 		D57D1F0F2806581400BF0A9E /* boop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = boop.wav; sourceTree = "<group>"; };
 		D58466672803AD04005F66DB /* anteater.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = anteater.png; sourceTree = "<group>"; };
 		D58466692803AD09005F66DB /* pig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pig.png; sourceTree = "<group>"; };
@@ -459,13 +473,20 @@
 		D85876D727C1904D001E0FF6 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				D52E69372806861500154416 /* badger2.png */,
+				D52E69352806861500154416 /* badger3.png */,
+				D52E69382806861500154416 /* durgon2.png */,
+				D52E69322806861500154416 /* durgon3.png */,
+				D52E69342806861500154416 /* pig2.png */,
+				D52E69302806861500154416 /* pig3.png */,
+				D52E69312806861500154416 /* sheep.png */,
+				D52E69362806861500154416 /* sheep2.png */,
+				D52E69332806861500154416 /* sheep3.png */,
 				EC9D150D2806709C005722BC /* tutorial.png */,
 				D58466692803AD09005F66DB /* pig.png */,
 				D58466672803AD04005F66DB /* anteater.png */,
 				EC00DAC327F4119B001C12E9 /* badger.png */,
 				EC00DAC227F4119B001C12E9 /* durgon.png */,
-				558D2AAC27F2E81D0003DC2B /* crate.jpg */,
-				558D2AAD27F2E81D0003DC2B /* map.jpg */,
 				D85876D827C1904D001E0FF6 /* parkbg.png */,
 			);
 			path = Textures;
@@ -559,17 +580,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				D584666A2803AD09005F66DB /* pig.png in Resources */,
+				D52E69412806861500154416 /* durgon2.png in Resources */,
 				EC00DAC427F4119B001C12E9 /* durgon.png in Resources */,
+				D52E693C2806861500154416 /* sheep3.png in Resources */,
+				D52E69392806861500154416 /* pig3.png in Resources */,
 				79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */,
-				558D2AAE27F2E81D0003DC2B /* crate.jpg in Resources */,
 				D57D1F102806581400BF0A9E /* boop.wav in Resources */,
+				D52E693A2806861500154416 /* sheep.png in Resources */,
 				EC00DAC527F4119B001C12E9 /* badger.png in Resources */,
+				D52E693B2806861500154416 /* durgon3.png in Resources */,
 				EC9D150E2806709C005722BC /* tutorial.png in Resources */,
 				D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */,
+				D52E693F2806861500154416 /* sheep2.png in Resources */,
 				D58466682803AD04005F66DB /* anteater.png in Resources */,
+				D52E693D2806861500154416 /* pig2.png in Resources */,
 				D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */,
 				ECAB503127F2861F00A8C3E7 /* haru-ni-yosete.wav in Resources */,
-				558D2AAF27F2E81D0003DC2B /* map.jpg in Resources */,
+				D52E693E2806861500154416 /* badger3.png in Resources */,
+				D52E69402806861500154416 /* badger2.png in Resources */,
 				ECAB503327F28A3F00A8C3E7 /* musical-beep.wav in Resources */,
 				D82C378E27AE4B5F00256AD9 /* LaunchScreen.storyboard in Resources */,
 				D82C378B27AE4B5F00256AD9 /* Assets.xcassets in Resources */,
