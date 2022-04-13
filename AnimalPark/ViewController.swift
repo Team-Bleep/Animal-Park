@@ -47,6 +47,7 @@ class ViewController: GLKViewController {
     
     // Load animals into the scene and increase Animal Encounter score
     public func createAnimals(numAnim: Int) {
+        despawnAnimals()
         glesRenderer.loadAnimal(Int32(numAnim))
         ScoreHandler.setScore(numAnim: numAnim)
     }
@@ -67,8 +68,8 @@ class ViewController: GLKViewController {
         }
         
         super.viewDidLoad()
-        setupGL()
         
+        setupGL()
         // Do any additional setup after loading the view.
         refreshData.lastOpened = Int(Date().timeIntervalSinceReferenceDate)
         

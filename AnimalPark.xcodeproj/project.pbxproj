@@ -75,9 +75,9 @@
 		D82C378927AE4B5D00256AD9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D82C378727AE4B5D00256AD9 /* Main.storyboard */; };
 		D82C378B27AE4B5F00256AD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D82C378A27AE4B5F00256AD9 /* Assets.xcassets */; };
 		D82C378E27AE4B5F00256AD9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D82C378C27AE4B5F00256AD9 /* LaunchScreen.storyboard */; };
-		D83C7A9E2806BCDE000AF2CD /* GloriaHallelujah.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D83C7A9C2806BCDE000AF2CD /* GloriaHallelujah.ttf */; };
 		D85032FF27C0E9310045BD14 /* GLESRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D85032FD27C0E9310045BD14 /* GLESRenderer.cpp */; };
 		D85876D927C1904D001E0FF6 /* parkbg.png in Resources */ = {isa = PBXBuildFile; fileRef = D85876D827C1904D001E0FF6 /* parkbg.png */; };
+		D89075062807413E0093B9C7 /* GloriaHallelujah.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D89075052807413E0093B9C7 /* GloriaHallelujah.ttf */; };
 		D8F0C21227C11842002BA60B /* VertexShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = D8F0C21127C11842002BA60B /* VertexShader.vsh */; };
 		D8F0C21427C11E69002BA60B /* FragmentShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = D8F0C21327C11E69002BA60B /* FragmentShader.fsh */; };
 		D8F0C21727C11FFF002BA60B /* Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D8F0C21627C11FFF002BA60B /* Renderer.mm */; };
@@ -209,11 +209,11 @@
 		D82C378A27AE4B5F00256AD9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D82C378D27AE4B5F00256AD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D82C378F27AE4B5F00256AD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D83C7A9C2806BCDE000AF2CD /* GloriaHallelujah.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = GloriaHallelujah.ttf; sourceTree = "<group>"; };
 		D85032FC27C0E9310045BD14 /* AnimalPark-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AnimalPark-Bridging-Header.h"; sourceTree = "<group>"; };
 		D85032FD27C0E9310045BD14 /* GLESRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GLESRenderer.cpp; sourceTree = "<group>"; };
 		D85032FE27C0E9310045BD14 /* GLESRenderer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GLESRenderer.hpp; sourceTree = "<group>"; };
 		D85876D827C1904D001E0FF6 /* parkbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = parkbg.png; sourceTree = "<group>"; };
+		D89075052807413E0093B9C7 /* GloriaHallelujah.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = GloriaHallelujah.ttf; sourceTree = "<group>"; };
 		D8F0C21127C11842002BA60B /* VertexShader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = VertexShader.vsh; sourceTree = "<group>"; };
 		D8F0C21327C11E69002BA60B /* FragmentShader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = FragmentShader.fsh; sourceTree = "<group>"; };
 		D8F0C21627C11FFF002BA60B /* Renderer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Renderer.mm; sourceTree = "<group>"; };
@@ -241,7 +241,7 @@
 		79AEC36527F3BEA300114AD3 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				D83C7A9A2806BCDE000AF2CD /* gloria-hallelujah */,
+				D89075042807413E0093B9C7 /* gloria-hallelujah */,
 				79AEC36627F3BEA300114AD3 /* animal-paws */,
 			);
 			path = Fonts;
@@ -464,15 +464,6 @@
 			path = Handlers;
 			sourceTree = "<group>";
 		};
-		D83C7A9A2806BCDE000AF2CD /* gloria-hallelujah */ = {
-			isa = PBXGroup;
-			children = (
-				D83C7A9C2806BCDE000AF2CD /* GloriaHallelujah.ttf */,
-			);
-			name = "gloria-hallelujah";
-			path = "../../../../Downloads/gloria-hallelujah";
-			sourceTree = "<group>";
-		};
 		D85876D727C1904D001E0FF6 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,6 +484,14 @@
 				D85876D827C1904D001E0FF6 /* parkbg.png */,
 			);
 			path = Textures;
+			sourceTree = "<group>";
+		};
+		D89075042807413E0093B9C7 /* gloria-hallelujah */ = {
+			isa = PBXGroup;
+			children = (
+				D89075052807413E0093B9C7 /* GloriaHallelujah.ttf */,
+			);
+			path = "gloria-hallelujah";
 			sourceTree = "<group>";
 		};
 		D8F0C21027C11657002BA60B /* Shaders */ = {
@@ -587,7 +586,7 @@
 				EC00DAC427F4119B001C12E9 /* durgon.png in Resources */,
 				D52E693C2806861500154416 /* sheep3.png in Resources */,
 				D52E69392806861500154416 /* pig3.png in Resources */,
-				D83C7A9E2806BCDE000AF2CD /* GloriaHallelujah.ttf in Resources */,
+				D89075062807413E0093B9C7 /* GloriaHallelujah.ttf in Resources */,
 				79AEC36D27F3BEA300114AD3 /* Animal Paws.ttf in Resources */,
 				D57D1F102806581400BF0A9E /* boop.wav in Resources */,
 				D52E693A2806861500154416 /* sheep.png in Resources */,

@@ -203,6 +203,14 @@ public:
     if (gravity) delete gravity;
     if (world) delete world;
     if (contactListener) delete contactListener;
+    for (int i = 0; i < 4; i++) {
+        if (wallBodyDef[i]) delete wallBodyDef[i];
+        if (wallBox[i]) delete wallBox[i];
+    }
+    for (int i = 0; i < numAnimals; i++) {
+        if (world && world->GetBodyCount() > 0 && animal[i])
+            world->DestroyBody(animal[i]);
+    }
 }
 
 -(void)Update:(float)elapsedTime {
@@ -255,16 +263,28 @@ public:
 }
 
 -(float)GetAnimalPositionX:(int)index {
-    if (animal[index]) {
-        return animal[index]->GetPosition().x;
-        
+    @try {
+        if (world && animal[index] && animal[index]->GetPosition().x) {
+            return animal[index]->GetPosition().x;
+        }
+        return FLT_MAX;
+    }@catch(NSException *exception) {
+        NSLog(@"crisis averted");
+        return FLT_MAX; // no animal found
     }
+    
     return FLT_MAX; // no animal found
 }
 
 -(float)GetAnimalPositionY:(int)index {
-    if (animal[index]) {
-        return animal[index]->GetPosition().y;
+    @try {
+        if (world && animal[index] && animal[index]->GetPosition().y) {
+            return animal[index]->GetPosition().y;
+        }
+        return FLT_MAX;
+    }@catch(NSException *exception) {
+        NSLog(@"crisis averted");
+        return FLT_MAX;
     }
     return FLT_MAX; // no animal found
 }

@@ -95,6 +95,7 @@ enum {
 @synthesize box2d;
 
 - (void)dealloc {
+    [self despawnAnimals];
     glDeleteProgram(programObject);
 }
 
@@ -161,7 +162,7 @@ enum {
         objects[i].numIndices = glesRenderer.GenAnimal(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
         // Randomized animal texture loaded
-        switch(arc4random_uniform(5)+1) {
+        switch(arc4random_uniform(14)+1) {
             case 1:
                 objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
                 glActiveTexture(GL_TEXTURE1);
@@ -236,6 +237,12 @@ enum {
                 break;
                 
             case 13:
+                objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
+                glActiveTexture(GL_TEXTURE13);
+                objects[i].animalTextureIndex = 13;
+                break;
+                
+            default:
                 objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
                 glActiveTexture(GL_TEXTURE13);
                 objects[i].animalTextureIndex = 13;
@@ -353,8 +360,7 @@ enum {
         // movement
         float x = ((([box2d GetAnimalPositionX:i]-1)*(3-1))/(390 - 1)) + 1;
         float y = ((([box2d GetAnimalPositionY:i]-1)*(1.5f-(-1.5f)))/(750-1))-1.5f;
-        if (x != FLT_MAX && y != FLT_MAX) {
-            //objects[i].mvp = GLKMatrix4Translate(objects[i].mvp, x, y, 0.000001);
+        if (x && x != FLT_MAX && y && y != FLT_MAX) {
             objects[i].mvp = GLKMatrix4TranslateWithVector3(objects[i].mvp, GLKVector3Make(x,y,0));
         }
     }
@@ -452,6 +458,11 @@ enum {
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 12);
                 break;
             case 13:
+                glActiveTexture(GL_TEXTURE13);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 13);
+                break;
+            default:
                 glActiveTexture(GL_TEXTURE13);
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 13);
