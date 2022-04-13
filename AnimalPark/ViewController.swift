@@ -105,6 +105,10 @@ class ViewController: GLKViewController {
         foodRefillButton.addTarget(self, action: #selector(refillFoodClicked(sender:)), for: .touchUpInside);
         self.view.addSubview(foodRefillButton);
         
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(self.doSingleTap(_:)))
+        singleTap.numberOfTapsRequired = 1
+        view.addGestureRecognizer(singleTap)
+        
         // Check if first time opening app, initializes currency saver
         if UserDefaults.standard.object(forKey: "firstLaunch") == nil {
             UserDefaults.standard.set(0, forKey: DefaultKeys.currency)
@@ -119,6 +123,14 @@ class ViewController: GLKViewController {
         //    let names = UIFont.fontNames(forFamilyName: family)
         //    print("Family: \(family) Font names: \(names)")
         //}
+    }
+    
+    @objc func doSingleTap(_ sender: UITapGestureRecognizer) {
+        let sound = glesRenderer.box2d.registerTap(Float(sender.location(in: view).x), ex: Float(sender.location(in: view).y));
+        if (sound) {
+            MusicPlayer.Instance.playSfx(sfx: "boop", ext: "wav");
+            print("boop");
+        }
     }
     
     @objc func refillFoodClicked(sender:UIButton!) {

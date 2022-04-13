@@ -246,6 +246,27 @@ public:
     }
 }
 
+-(bool) RegisterTap:(float)posX Ex:(float)posY {
+    float padding = 100.0;
+    for (int i = 0; i < numAnimals; i++) {
+        if (animal[i]) {
+            if([self GetAnimalPositionX:i] >= (posX-padding)
+               && [self GetAnimalPositionX:i] <= (posX+padding)
+               && [self GetAnimalPositionX:i] != FLT_MAX) {
+                
+                if([self GetAnimalPositionY:i] >= (posY-padding)
+                   && [self GetAnimalPositionY:i] <= (posY+padding)
+                   && [self GetAnimalPositionY:i] != FLT_MAX) {
+                    animal[i]->SetLinearVelocity(b2Vec2(animal[i]->GetLinearVelocity().x*-2, animal[i]->GetLinearVelocity().y*-2));
+                    animal[i]->SetAwake(true);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 -(float)GetAnimalPositionX:(int)index
 {
     if (animal[index]) {
