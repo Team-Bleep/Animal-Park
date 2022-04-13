@@ -38,6 +38,7 @@
 //-(void) RegisterHit:(float)posx Ex:(float)posy;                // Register when the ball hits the brick
 -(float) GetAnimalPositionX:(int)index;
 -(float) GetAnimalPositionY:(int)index;
+-(bool) RegisterTap:(float)posX Ex:(float)posY;
 @end
 
 #endif
