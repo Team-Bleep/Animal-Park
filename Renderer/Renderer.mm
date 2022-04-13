@@ -161,7 +161,7 @@ enum {
         objects[i].numIndices = glesRenderer.GenAnimal(1.0f, &objects[i].vertices, &objects[i].normals, &objects[i].texCoords, &objects[i].indices);
 
         // Randomized animal texture loaded
-        switch(arc4random_uniform(5)+1) {
+        switch(arc4random_uniform(14)+1) {
             case 1:
                 objects[i].animalTexture = [self setupTexture:(@"durgon.png")];
                 glActiveTexture(GL_TEXTURE1);
@@ -236,6 +236,12 @@ enum {
                 break;
                 
             case 13:
+                objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
+                glActiveTexture(GL_TEXTURE13);
+                objects[i].animalTextureIndex = 13;
+                break;
+                
+            default:
                 objects[i].animalTexture = [self setupTexture:(@"anteater.png")];
                 glActiveTexture(GL_TEXTURE13);
                 objects[i].animalTextureIndex = 13;
@@ -452,6 +458,11 @@ enum {
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 12);
                 break;
             case 13:
+                glActiveTexture(GL_TEXTURE13);
+                glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
+                glUniform1i(uniforms[UNIFORM_TEXTURE], 13);
+                break;
+            default:
                 glActiveTexture(GL_TEXTURE13);
                 glBindTexture(GL_TEXTURE_2D, objects[i].animalTexture);
                 glUniform1i(uniforms[UNIFORM_TEXTURE], 13);
